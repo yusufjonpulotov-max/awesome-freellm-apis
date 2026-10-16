@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 800" width="1160" height="800" role="img" aria-label="Патогенези камхунии ҳуҷайраҳои досма">
+
+<defs>
+  <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#0f6f8c"/>
+  </marker>
+  <marker id="arwR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#a1202b"/>
+  </marker>
+  <style>
+    .t { font-family:'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; }
+    .title { font:700 21px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#123b52; }
+    .sub   { font:400 14px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#5b6b7c; }
+    .bx    { fill:#eaf4f8; stroke:#0f6f8c; stroke-width:1.6; }
+    .bxg   { fill:#eaf6f0; stroke:#1c6b4a; stroke-width:1.6; }
+    .bxw   { fill:#fdf4e7; stroke:#a8571b; stroke-width:1.6; }
+    .bxr   { fill:#fdeced; stroke:#a1202b; stroke-width:1.6; }
+    .bxg2  { fill:#f3f6f9; stroke:#7b8ea3; stroke-width:1.6; }
+    .h     { font:700 15px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#0d3a52; }
+    .p     { font:400 12.8px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#23394b; }
+    .s     { font:400 11.8px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#3d5566; }
+    .lbl   { font:700 13px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#0f6f8c; }
+    .lblr  { font:700 13px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#a1202b; }
+    .flow  { stroke:#0f6f8c; stroke-width:1.8; fill:none; marker-end:url(#arw); }
+    .flowr { stroke:#a1202b; stroke-width:1.8; fill:none; marker-end:url(#arwR); }
+  </style>
+</defs>
+
+<rect width="1160" height="800" fill="#ffffff"/>
+<text class="title" x="560" y="34" text-anchor="middle">Патогенези камхунии ҳуҷайраҳои досма: аз мутация то криз</text>
+<text class="sub" x="560" y="58" text-anchor="middle">Занҷираро аз боло ба поён хонед; триггерҳо дар тарафи чап, нуқтаҳои таъсири табобат дар тарафи рост</text>
+
+<rect class="bx" x="330" y="78" width="460" height="58" rx="12"/>
+<text class="h" x="560.0" y="104" text-anchor="middle">Мутацияи HBB: кодони 6, Glu → Val (HbS)</text>
+
+<path class="flow" d="M560,136 L560,166"/>
+<rect class="bx" x="330" y="166" width="460" height="58" rx="12"/>
+<text class="h" x="560.0" y="192" text-anchor="middle">Дезоксигенатсия (гипоксия, асидоз, дегидрататсия)</text>
+
+<path class="flow" d="M560,224 L560,254"/>
+<rect class="bxw" x="330" y="254" width="460" height="92" rx="12"/>
+<text class="h" x="560.0" y="280" text-anchor="middle">ПОЛИМЕРИЗАТСИЯ: валини β ба ҷайби гидрофобии</text>
+<text class="p" x="560.0" y="302" text-anchor="middle">молекулаи ҳамсоя мепайвандад</text>
+<text class="p" x="560.0" y="324" text-anchor="middle">→ фибриллҳои HbS</text>
+
+<path class="flow" d="M560,346 L560,376"/>
+<rect class="bxr" x="330" y="376" width="460" height="74" rx="12"/>
+<text class="h" x="560.0" y="402" text-anchor="middle">Ҳуҷайра шакли ДОСМА мегирад</text>
+<text class="p" x="560.0" y="424" text-anchor="middle">деформатсияпазирӣ ↓</text>
+
+<path class="flow" d="M560,450 L560,480"/>
+<rect class="bxr" x="330" y="480" width="460" height="74" rx="12"/>
+<text class="h" x="560.0" y="506" text-anchor="middle">Дегидрататсия: Ca²⁺ ↑ → канали Gardos</text>
+<text class="p" x="560.0" y="528" text-anchor="middle">K⁺ ва об берун → MCHC ↑</text>
+
+<path class="flowr" d="M790,517 Q910,517 910,420 Q910,340 795,330"/>
+<text class="lblr" x="915" y="440">ҳалқаи пороқ:</text>
+<text class="s" x="915" y="458">MCHC ↑ → полимеризатсия</text>
+<text class="s" x="915" y="474">боз ҳам тезтар мешавад</text>
+
+<path class="flow" d="M560,554 L560,586"/>
+<rect class="bxg" x="180" y="586" width="340" height="150" rx="12"/>
+<text class="h" x="350.0" y="612" text-anchor="middle">ВАСООККЛЮЗИЯ</text>
+<text class="p" x="350.0" y="633" text-anchor="middle">часпакӣ: P-selectin, VCAM-1,</text>
+<text class="p" x="350.0" y="654" text-anchor="middle">ICAM-1; лейкотситҳо</text>
+<text class="p" x="350.0" y="675" text-anchor="middle">→ ишемия, гипоксия, некроз</text>
+<text class="p" x="350.0" y="696" text-anchor="middle">→ КРИЗҲОИ ДАРД (VOC),</text>
+<text class="p" x="350.0" y="717" text-anchor="middle">ACS, инсулт</text>
+<rect class="bxg" x="600" y="586" width="340" height="150" rx="12"/>
+<text class="h" x="770.0" y="612" text-anchor="middle">ГЕМОЛИЗ</text>
+<text class="p" x="770.0" y="633" text-anchor="middle">Hb ва аргиназаи озод → NO ↓</text>
+<text class="p" x="770.0" y="654" text-anchor="middle">→ вазоконстриксия,</text>
+<text class="p" x="770.0" y="675" text-anchor="middle">гипертензияи пулмоналӣ,</text>
+<text class="p" x="770.0" y="696" text-anchor="middle">ҳиперкоагулятсия</text>
+<text class="p" x="770.0" y="717" text-anchor="middle">→ приапизм, захмҳои пои</text>
+
+<path class="flow" d="M250,586 L250,560"/>
+<text class="lbl" x="40" y="540">ТРИГГЕРҲО:</text>
+<text class="s" x="40" y="558">сироят, табларза,</text>
+<text class="s" x="40" y="574">дегидрататсия, сармо,</text>
+<text class="s" x="40" y="590">стресс, баландӣ, асидоз</text>
+<path class="flow" d="M980,586 L980,560"/>
+<text class="lbl" x="1000" y="540">ТАБОБАТ:</text>
+<text class="s" x="1000" y="558">hydroxyurea (HbF ↑),</text>
+<text class="s" x="1000" y="574">трансфузия, HSCT,</text>
+<text class="s" x="1000" y="590">терапияи генетикӣ</text>
+</svg>

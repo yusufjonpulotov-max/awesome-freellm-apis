@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 760" width="1080" height="760" role="img" aria-label="Механизмҳои асосии камхуниҳои гемолитикии модарзодӣ">
+
+<defs>
+  <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#0f6f8c"/>
+  </marker>
+  <marker id="arwR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#a1202b"/>
+  </marker>
+  <style>
+    .t { font-family:'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; }
+    .title { font:700 21px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#123b52; }
+    .sub   { font:400 14px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#5b6b7c; }
+    .bx    { fill:#eaf4f8; stroke:#0f6f8c; stroke-width:1.6; }
+    .bxg   { fill:#eaf6f0; stroke:#1c6b4a; stroke-width:1.6; }
+    .bxw   { fill:#fdf4e7; stroke:#a8571b; stroke-width:1.6; }
+    .bxr   { fill:#fdeced; stroke:#a1202b; stroke-width:1.6; }
+    .bxg2  { fill:#f3f6f9; stroke:#7b8ea3; stroke-width:1.6; }
+    .h     { font:700 15px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#0d3a52; }
+    .p     { font:400 12.8px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#23394b; }
+    .s     { font:400 11.8px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#3d5566; }
+    .lbl   { font:700 13px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#0f6f8c; }
+    .lblr  { font:700 13px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#a1202b; }
+    .flow  { stroke:#0f6f8c; stroke-width:1.8; fill:none; marker-end:url(#arw); }
+    .flowr { stroke:#a1202b; stroke-width:1.8; fill:none; marker-end:url(#arwR); }
+  </style>
+</defs>
+
+<rect width="1080" height="760" fill="#ffffff"/>
+<text class="title" x="540" y="38" text-anchor="middle">Камхуниҳои гемолитикии модарзодӣ: се механизми асосӣ</text>
+<text class="sub" x="540" y="62" text-anchor="middle">Нуқсон дар яке аз се система — мембрана, метаболизм (ферментҳо) ё гемоглобин — эритротситро ноустувор мекунад</text>
+
+<rect class="bx" x="30" y="92" width="320" height="112" rx="12"/>
+<text class="h" x="190.0" y="118" text-anchor="middle">МЕМБРАНА ва СКЕЛЕТ</text>
+<text class="p" x="190.0" y="138" text-anchor="middle">спектрин · анкирин · протеин 4.2 · band 3</text>
+<text class="p" x="190.0" y="158" text-anchor="middle">нуқсон → сферотсит / эллиптотсит</text>
+<rect class="bx" x="380" y="92" width="320" height="112" rx="12"/>
+<text class="h" x="540.0" y="118" text-anchor="middle">ФЕРМЕНТҲО (метаболизм)</text>
+<text class="p" x="540.0" y="138" text-anchor="middle">G6PD → NADPH ↓   ·   PK → ATP ↓</text>
+<text class="p" x="540.0" y="158" text-anchor="middle">нуқсон → ҷисмҳои Heinz / дегидрататсия</text>
+<rect class="bx" x="730" y="92" width="320" height="112" rx="12"/>
+<text class="h" x="890.0" y="118" text-anchor="middle">ГЕМОГЛОБИН</text>
+<text class="p" x="890.0" y="138" text-anchor="middle">миқдор → талассемия   ·   сифат → HbS</text>
+<text class="p" x="890.0" y="158" text-anchor="middle">нуқсон → избытоки занҷирҳо</text>
+<text class="p" x="890.0" y="178" text-anchor="middle">ё полимеризатсия</text>
+
+<path class="flow" d="M190,204 L190,250 Q190,268 208,268 L470,268"/>
+<path class="flow" d="M540,204 L540,252"/>
+<path class="flow" d="M890,204 L890,250 Q890,268 872,268 L610,268"/>
+
+<rect class="bxw" x="360" y="268" width="360" height="74" rx="12"/>
+<text class="h" x="540.0" y="294" text-anchor="middle">ЭРИТРОТСИТИ НУҚСОНДОР</text>
+<text class="p" x="540.0" y="314" text-anchor="middle">умри кӯтоҳ: аз 100–120 рӯз то 15–20 рӯз</text>
+
+<path class="flow" d="M470,342 L470,378 Q470,396 452,396 L300,396"/>
+<path class="flow" d="M610,342 L610,378 Q610,396 628,396 L780,396"/>
+
+<rect class="bxg" x="60" y="396" width="420" height="128" rx="12"/>
+<text class="h" x="270.0" y="422" text-anchor="middle">ЭКСТРАВАСКУЛЯРӢ (сипурз, ҷигар)</text>
+<text class="p" x="270.0" y="442" text-anchor="middle">фагоцитоз · «бозёфти сипурз»</text>
+<text class="p" x="270.0" y="462" text-anchor="middle">спленомегалия · сферотситҳо</text>
+<text class="s" x="270.0" y="482" text-anchor="middle">≈ 90 % ҳолатҳо</text>
+<rect class="bxr" x="600" y="396" width="420" height="128" rx="12"/>
+<text class="h" x="810.0" y="422" text-anchor="middle">ИНТРАВАСКУЛЯРӢ (дар дохили рагҳо)</text>
+<text class="p" x="810.0" y="442" text-anchor="middle">комплемент · механикӣ · оксидантҳо</text>
+<text class="p" x="810.0" y="462" text-anchor="middle">гемоглобинемия · гемоглобинурия</text>
+<text class="s" x="810.0" y="482" text-anchor="middle">гаптоглобин ↓↓↓   ·   ≈ 10 % ҳолатҳо</text>
+
+<path class="flow" d="M270,524 L270,560 Q270,578 288,578 L470,578"/>
+<path class="flow" d="M810,524 L810,560 Q810,578 792,578 L610,578"/>
+<rect class="bxg2" x="360" y="578" width="360" height="66" rx="12"/>
+<text class="h" x="540.0" y="604" text-anchor="middle">КАМХУНӢ + ГЕМОЛИЗ</text>
+<text class="p" x="540.0" y="624" text-anchor="middle">ретикулотситоз (ҷуброн)</text>
+
+<path class="flow" d="M470,644 L470,672 Q470,690 452,690 L330,690"/>
+<path class="flow" d="M610,644 L610,672 Q610,690 628,690 L750,690"/>
+<rect class="bxg2" x="70" y="690" width="380" height="58" rx="12"/>
+<text class="p" x="260.0" y="716" text-anchor="middle">КЛИНИКА: зардӣ · спленомегалия · сангҳои талхадон</text>
+<rect class="bxg2" x="630" y="690" width="380" height="58" rx="12"/>
+<text class="p" x="820.0" y="716" text-anchor="middle">ЛАБОРАТОРИЯ: билирубин · LDH · ретикулотситҳо ↑</text>
+</svg>

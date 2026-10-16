@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 620" width="1080" height="620" role="img" aria-label="Скелети мембранаи эритротсит">
+
+<defs>
+  <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#0f6f8c"/>
+  </marker>
+  <marker id="arwR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#a1202b"/>
+  </marker>
+  <style>
+    .t { font-family:'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; }
+    .title { font:700 21px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#123b52; }
+    .sub   { font:400 14px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#5b6b7c; }
+    .bx    { fill:#eaf4f8; stroke:#0f6f8c; stroke-width:1.6; }
+    .bxg   { fill:#eaf6f0; stroke:#1c6b4a; stroke-width:1.6; }
+    .bxw   { fill:#fdf4e7; stroke:#a8571b; stroke-width:1.6; }
+    .bxr   { fill:#fdeced; stroke:#a1202b; stroke-width:1.6; }
+    .bxg2  { fill:#f3f6f9; stroke:#7b8ea3; stroke-width:1.6; }
+    .h     { font:700 15px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#0d3a52; }
+    .p     { font:400 12.8px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#23394b; }
+    .s     { font:400 11.8px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#3d5566; }
+    .lbl   { font:700 13px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#0f6f8c; }
+    .lblr  { font:700 13px 'Segoe UI','Noto Sans','PT Sans',Arial,sans-serif; fill:#a1202b; }
+    .flow  { stroke:#0f6f8c; stroke-width:1.8; fill:none; marker-end:url(#arw); }
+    .flowr { stroke:#a1202b; stroke-width:1.8; fill:none; marker-end:url(#arwR); }
+  </style>
+</defs>
+
+<rect width="1080" height="620" fill="#ffffff"/>
+<text class="title" x="540" y="36" text-anchor="middle">Скелети мембранаи эритротсит: пайвандҳои вертикалӣ ва уфуқӣ</text>
+<text class="sub" x="540" y="60" text-anchor="middle">Вертикалӣ (анкирин/band 3) вайрон шавад → сферотсит · Уфуқӣ (спектрин–актин) вайрон шавад → эллиптотсит</text>
+
+<!-- липидии дуқабат -->
+<rect x="60" y="96" width="960" height="20" rx="10" fill="#cfe3ee" stroke="#7ba6bf"/>
+<text class="s" x="60" y="90">дуқабати липидӣ (фосфолипидҳо, холестерол)</text>
+
+<!-- band 3 -->
+<rect x="300" y="96" width="86" height="84" rx="10" fill="#0f6f8c" opacity="0.85"/>
+<text class="s" x="343" y="200" text-anchor="middle" fill="#0d3a52"><tspan font-weight="700">band 3 (AE1)</tspan></text>
+<rect x="700" y="96" width="86" height="84" rx="10" fill="#0f6f8c" opacity="0.55"/>
+<text class="s" x="743" y="200" text-anchor="middle" fill="#0d3a52"><tspan font-weight="700">band 3</tspan></text>
+
+<!-- анкирин -->
+<rect x="316" y="210" width="54" height="60" rx="10" fill="#a8571b" opacity="0.9"/>
+<text class="h" x="343" y="292" text-anchor="middle" fill="#a8571b">анкирин</text>
+
+<!-- 4.2 -->
+<rect x="392" y="216" width="48" height="48" rx="10" fill="#7b8ea3"/>
+<text class="h" x="416" y="292" text-anchor="middle" fill="#4a6070">4.2</text>
+
+<!-- спектрин -->
+<line x1="343" y1="300" x2="343" y2="380" stroke="#1c6b4a" stroke-width="8" stroke-linecap="round"/>
+<line x1="343" y1="380" x2="560" y2="380" stroke="#1c6b4a" stroke-width="8" stroke-linecap="round"/>
+<line x1="560" y1="380" x2="560" y2="300" stroke="#1c6b4a" stroke-width="8" stroke-linecap="round"/>
+<line x1="560" y1="380" x2="780" y2="380" stroke="#1c6b4a" stroke-width="8" stroke-linecap="round"/>
+<line x1="780" y1="380" x2="780" y2="300" stroke="#1c6b4a" stroke-width="8" stroke-linecap="round"/>
+<line x1="780" y1="300" x2="780" y2="230" stroke="#1c6b4a" stroke-width="6" stroke-dasharray="8 6" stroke-linecap="round"/>
+<text class="h" x="455" y="410" text-anchor="middle" fill="#1c6b4a">α- ва β-спектрин (тетрамер)</text>
+
+<!-- актин -->
+<circle cx="560" cy="380" r="16" fill="#1c6b4a"/>
+<text class="s" x="560" y="430" text-anchor="middle" fill="#1c6b4a">актин · аддуцин · тропомиозин (пайванди уфуқӣ)</text>
+
+<!-- 4.1R -->
+<rect x="762" y="228" width="46" height="46" rx="10" fill="#7b8ea3"/>
+<text class="h" x="785" y="292" text-anchor="middle" fill="#4a6070">4.1R</text>
+
+<!-- гликофорин C -->
+<rect x="820" y="96" width="70" height="70" rx="10" fill="#3f7f9c" opacity="0.7"/>
+<text class="s" x="855" y="186" text-anchor="middle" fill="#0d3a52"><tspan font-weight="700">гликофорин C</tspan></text>
+
+<!-- тирҳои шарҳ -->
+<path class="flow" d="M343,300 L343,214"/>
+<text class="lbl" x="120" y="252">ПАЙВАНДИ ВЕРТИКАЛӢ:</text>
+<text class="s" x="120" y="272">band 3 ← 4.2 ← анкирин ← спектрин</text>
+<rect class="bxr" x="60" y="470" width="420" height="116" rx="12"/>
+<text class="h" x="270.0" y="496" text-anchor="middle">Нуқсони пайванди ВЕРТИКАЛӢ</text>
+<text class="p" x="270.0" y="518" text-anchor="middle">талафи везикулҳо ва липидҳо</text>
+<text class="p" x="270.0" y="540" text-anchor="middle">сатҳ/ҳаҷм ↓ → СФЕРОТСИТ</text>
+<text class="s" x="270.0" y="562" text-anchor="middle">MCHC ↑ (> 360 г/л) · osmotic fragility +</text>
+<rect class="bxw" x="600" y="470" width="420" height="116" rx="12"/>
+<text class="h" x="810.0" y="496" text-anchor="middle">Нуқсони пайванди УФУҚӢ</text>
+<text class="p" x="810.0" y="518" text-anchor="middle">ҳуҷайра робитаро гум мекунад</text>
+<text class="p" x="810.0" y="540" text-anchor="middle">шакли эллипс → ЭЛЛИПТОТСИТ</text>
+<text class="s" x="810.0" y="562" text-anchor="middle">EMA-binding муқаррарӣ</text>
+</svg>
