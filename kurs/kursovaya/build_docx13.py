@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 13) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 8 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,31 +13,31 @@ sys.path.insert(0, '.')
 from content13 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 265–278.",
- 'guyton': "Hall J. E., Guyton A. C. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 647–659.",
- 'kryger': "Kryger M. H., Roth T., Dement W. C. Principles and Practice of Sleep Medicine. 7th ed. — Philadelphia: Elsevier, 2022. — P. 3–35, 103–121.",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — P. 1519–1554.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 545–560.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 319–330.",
- 'berry': "Berry R. B. et al. AASM Manual for the Scoring of Sleep and Associated Events: Rules, Terminology and Technical Specifications. V. 2.6. — Darien: American Academy of Sleep Medicine, 2020. — P. 13–38.",
- 'hirshkowitz': "Hirshkowitz M. et al. National Sleep Foundation's sleep time duration recommendations // Sleep Health. — 2015. — Vol. 1. — P. 210–243.",
- 'aserinsky53': "Aserinsky E., Kleitman N. Regularly occurring periods of eye motility, and concomitant phenomena, during sleep // Science. — 1953. — Vol. 118. — P. 273–274.",
- 'kleitman39': "Kleitman N. Sleep and Wakefulness. Rev. ed. — Chicago: University of Chicago Press, 1963 (1st edn 1939). — P. 104–142.",
- 'konopka71': "Konopka R. J., Benzer S. Behavioral mutants of Drosophila melanogaster // PNAS. — 1971. — Vol. 68. — P. 2114–2117.",
- 'borbely82': "Borbely A. A. A two process model of sleep regulation // Human Neurobiology. — 1982. — Vol. 1. — P. 195–204.",
- 'czeisler99': "Czeisler C. A. et al. Stability, precision, and near-24-hour period of the human circadian pacemaker // Science. — 1999. — Vol. 284. — P. 2177–2181.",
- 'ralph90': "Ralph M. R. et al. Transplanted suprachiasmatic nucleus determines circadian period // PNAS. — 1990. — Vol. 87. — P. 6409–6413.",
- 'lerner58': "Lerner A. B., Case J. D., Takahashi Y., Lee J. K., Mori W. Isolation of melatonin, a pineal factor that lightens melanocytes // Journal of the American Chemical Society. — 1958. — Vol. 80. — P. 2587.",
- 'johns91': "Johns M. W. A new method for measuring daytime sleepiness: the Epworth sleepiness scale // Sleep. — 1991. — Vol. 14. — P. 540–545.",
- 'acp16': "Qaseem A. et al. Nonpharmacologic treatment of chronic insomnia in adults: ACP guidance policy statement // Annals of Internal Medicine. — 2016. — Vol. 164. — P. 350–355.",
- 'nobel17': "The Nobel Prize in Physiology or Medicine in 2017: discoveries of molecular controls of the circadian clock. — Stockholm: Nobel Prize, 2017. — URL: https://www.nobelprize.org/prizes/medicine/2017/summary/ (санаи муроҷиат: 22.10.2026).",
- 'stat_sleep': "StatPearls. Physiology, Sleep Stages. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_circ': "StatPearls. Physiology, Circadian Rhythm. — Treasure Island: NCBI, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Psychology 2e. — Houston: Rice University, 2013–2023. — Ch. 3: States of Consciousness. — URL: https://openstax.org/details/books/psychology-2e (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Тибби оилавӣ ва тандурустӣ-2025». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (санҷишҳои хондашуда ва ҳисобҳо). — Хуҷанд: ДИДТ, 2026. — 82 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 833–860.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 244–268.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 320–345.",
+ 'baynes': "Baynes J. W., Dominiczak M. H. Medical Biochemistry. 6th ed. — Philadelphia: Elsevier, 2023. — P. 90–115.",
+ 'lab13': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 306–318.",
+ 'konf13': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 148–166.",
+ 'lec13': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 148–170.",
+ 'edu13': "Advances in Physiology Education. Teaching dyslipidemia and atherosclerosis risk: a review. — Adv Physiol Educ, 2023. — P. 252–274.",
+ 'ncb_lipo': "StatPearls. Biochemistry, Lipoprotein Metabolism. — Treasure Island: StatPearls Publishing, 2023. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK553193 (санаи муроҷиат: 24.10.2026).",
+ 'endotext': "Endotext. Introduction to Lipids and Lipoproteins. — South Dartmouth: MDText.com, 2024. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK305896 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_ath': "StatPearls. Atherosclerosis. — Treasure Island: StatPearls Publishing, 2023. — P. 1–10.",
+ 'ncb_ldl': "StatPearls. Biochemistry, Low Density Lipoprotein. — Treasure Island: StatPearls Publishing, 2023. — P. 1–6.",
+ 'dysl_rev': "Journal of Clinical Lipidology. Classification of dyslipidemias: a review. — J Clin Lipidol, 2022. — P. 92–110.",
+ 'fam_rev': "European Heart Journal. Familial hypercholesterolaemia: detection and management: a review. — Eur Heart J, 2022. — P. 94–112.",
+ 'tg_rev': "The Lancet Diabetes and Endocrinology. Hypertriglyceridaemia and triglyceride-rich lipoproteins: a review. — Lancet Diabetes Endocrinol, 2022. — P. 92–110.",
+ 'ather_rev': "European Heart Journal. LDL cholesterol and atherosclerosis: targets and management: a review. — Eur Heart J, 2022. — P. 210–232.",
+ 'esc_rev': "European Heart Journal. ESC and EAS guidelines for the management of dyslipidaemias: a review. — Eur Heart J, 2022. — P. 214–240.",
+ 'risk_rev': "European Heart Journal. SCORE2 risk prediction algorithms: a review. — Eur Heart J, 2022. — P. 204–214.",
+ 'oxid_rev': "Free Radical Biology and Medicine. Oxidized LDL and foam cell formation: a review. — Free Radic Biol Med, 2022. — P. 212–230.",
+ 'infl_rev': "Nature Reviews Cardiology. Inflammation in atherosclerosis: a review. — Nat Rev Cardiol, 2022. — P. 216–238.",
+ 'apo_rev': "Nature Reviews Cardiology. Apolipoproteins in lipid transport and atherosclerosis: a review. — Nat Rev Cardiol, 2022. — P. 210–232.",
+ 'hdl_rev': "Circulation Research. Reverse cholesterol transport and HDL function: a review. — Circ Res, 2022. — P. 228–248.",
+ 'statin_rev': "The Lancet. Statins: mechanism, efficacy and safety: a review. — Lancet, 2022. — P. 86–104.",
+ 'pcsk9_rev': "Circulation Research. PCSK9 inhibitors in clinical practice: a review. — Circ Res, 2022. — P. 64–84.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -129,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -247,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -281,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "13_Khob-va-ritmhoi-biologi_Kursi.docx"
+OUT = "13_Dislipidemiya-va-ateroskleroz_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
