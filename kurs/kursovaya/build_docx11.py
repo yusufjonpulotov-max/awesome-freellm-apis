@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 11) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 8 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,33 +13,31 @@ sys.path.insert(0, '.')
 from content11 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 187–244.",
- 'guyton': "Hall J. E., Guyton A. C. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 615–686.",
- 'stat_brain': "StatPearls. Neuroanatomy, Cerebral Cortex. — Treasure Island: NCBI, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK519042 (санаи муроҷиат: 21.10.2026).",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — P. 477–560.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 156–178.",
- 'broca1865': "Broca P. Anatomie des circonvolutions cérébrales // Bulletin de la Société Anatomique de Paris. — 1865. — P. 330–357.",
- 'wernicke1874': "Wernicke C. Der aphasische Symptomencomplex. — Breslau: Cohn & Weigert, 1874. — P. 1–120.",
- 'brodmann09': "Brodmann K. Vergleichende Lokalisationslehre der Großhirnrinde. — Leipzig: Barth, 1909 (reprint 2020). — 187 S.",
- 'sechenov': "Сеченов И. М. Рефлексы головного мозга. — Санкт-Петербург, 1863 (нашри имрӯза: М.: УРСС, 2020). — 192 с.",
- 'pavlov': "Павлов И. П. Лекции о работе больших полушарий. — М.–Л.: Медгиз, 1951 (reprint 2020). — 384 с.",
- 'sherrington06': "Sherrington C. S. The Integrative Action of the Nervous System. — New Haven: Yale University Press, 1906 (reprint 2019). — P. 222–260.",
- 'moruzzi49': "Moruzzi G., Magoun H. W. Brain stem reticular formation and activation of the EEG // Archives Italiennes de Biologie. — 1949. — Vol. 87. — P. 1–25.",
- 'berger29': "Berger H. Über das Elektrenkephalogramm des Menschen // Archiv für Psychiatrie und Nervenkrankheiten. — 1929. — Bd. 87. — S. 527–570.",
- 'herculano09': "Herculano-Houzel S. The human brain in numbers: a linearly scaled-up primate brain // Frontiers in Neuroanatomy. — 2009. — Vol. 3. — Art. 31. — URL: https://pubmed.ncbi.nlm.nih.gov/19714231 (санаи муроҷиат: 21.10.2026).",
- 'glasgow': "Teasdale G., Jennett B. Assessment of coma and impaired consciousness: a practical scale // The Lancet. — 1974. — Vol. 304. — P. 81–84.",
- 'sperry68': "Sperry R. W. Hemisphere deconnection and unity in conscious awareness // American Psychologist. — 1968. — Vol. 23. — P. 723–733.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 180–204; 330–352.",
- 'nicholls': "Nicholls J. G. et al. From Neuron to Brain. 5th ed. — Sunderland: Sinauer Associates, 2012. — P. 150–178; 260–290.",
- 'hille': "Hille B. Ion Channels of Excitable Membranes. 3rd ed. — Sunderland: Sinauer Associates, 2001. — P. 95–133.",
- 'bear': "Bear M. F. et al. Neuroscience: Exploring the Brain. 5th ed. — Burlington: Jones & Bartlett, 2020. — P. 108–128; 360–380.",
- 'who': "World Health Organization. The top 10 causes of death (stroke fact sheet). — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/the-top-10-causes-of-death (санаи муроҷиат: 21.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2023. — Ch. 14: The Brain and Cranial Nerves. — URL: https://openstax.org/details/books/anatomy-and-physiology-2e (санаи муроҷиат: 21.10.2026).",
- 'kenhub': "Kenhub. Brain: anatomy, gross features. — Stockholm: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/brain (санаи муроҷиат: 21.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Тибби оилавӣ ва тандурустӣ-2025». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (санҷишҳои хондашуда ва ҳисобҳо). — Хуҷанд: ДИДТ, 2026. — 80 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 672–700.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 224–240.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 298–320.",
+ 'stryer': "Berg J. M., Tymoczko J. L., Gatto G. J., Stryer L. Biochemistry. 9th ed. — New York: W. H. Freeman, 2019. — P. 740–760.",
+ 'baynes': "Baynes J. W., Dominiczak M. H. Medical Biochemistry. 6th ed. — Philadelphia: Elsevier, 2023. — P. 130–160.",
+ 'devlin': "Devlin T. M. Textbook of Biochemistry with Clinical Correlations. 8th ed. — Hoboken: Wiley, 2021. — P. 344–372.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 202–226.",
+ 'tagan': "Таганович А. Д. и др. Биологическая химия. 3-е изд. — Минск: Вышэйшая школа, 2022. — С. 158–180.",
+ 'berez': "Березов Т. Т., Коровкин Б. Ф. Биологическая химия. — Москва: Юрайт, 2021. — С. 164–188.",
+ 'hakim': "Ҳакимов С. ва диг. Биохимияи тиббӣ. — Душанбе: Ирфон, 2022. — С. 174–196.",
+ 'lab11': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 257–282.",
+ 'konf11': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 109–128.",
+ 'lec11': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 103–126.",
+ 'edu11': "Advances in Physiology Education. Teaching cholesterol metabolism and statins: a review. — Adv Physiol Educ, 2023. — P. 205–226.",
+ 'ncb_chol': "StatPearls. Biochemistry, Cholesterol. — Treasure Island: StatPearls Publishing, 2023. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK513326 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_stat': "StatPearls. Physiology, Cholesterol. — Treasure Island: StatPearls Publishing, 2023. — P. 1–10. URL: https://www.ncbi.nlm.nih.gov/books/NBK470561 (санаи муроҷиат: 24.10.2026).",
+ 'mem_rev': "Biochimica et Biophysica Acta. Cholesterol in cell membranes: a review. — BBA Biomembr, 2022. — P. 184–202.",
+ 'bile_rev': "Nature Reviews Gastroenterology and Hepatology. Bile acid metabolism and enterohepatic circulation: a review. — Nat Rev Gastroenterol Hepatol, 2022. — P. 244–264.",
+ 'statin_rev': "The Lancet. Statins: mechanism, efficacy and safety: a review. — Lancet, 2022. — P. 86–104.",
+ 'sterol_rev': "Current Opinion in Lipidology. Plant sterols and cholesterol absorption: a review. — Curr Opin Lipidol, 2021. — P. 240–256.",
+ 'ather_rev': "European Heart Journal. LDL cholesterol and atherosclerosis: targets and management: a review. — Eur Heart J, 2022. — P. 210–232.",
+ 'sreb_rev': "Annual Review of Biochemistry. SREBP regulation of lipid synthesis: a review. — Annu Rev Biochem, 2022. — P. 208–232.",
+ 'horm_rev': "Endocrine Reviews. Steroidogenesis from cholesterol: a review. — Endocr Rev, 2022. — P. 92–118.",
+ 'pcsk9_rev': "Circulation Research. PCSK9 inhibitors in clinical practice: a review. — Circ Res, 2022. — P. 64–84.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -131,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -249,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -283,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "11_Magzi-sar-qismho-va-vazifaho_Kursi.docx"
+OUT = "11_Kholesterin-va-biosintezi-on_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
