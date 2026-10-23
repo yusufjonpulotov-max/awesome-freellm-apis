@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 12) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 8 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,32 +13,31 @@ sys.path.insert(0, '.')
 from content12 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 245–280.",
- 'guyton': "Hall J. E., Guyton A. C. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 751–786.",
- 'stat_ans': "StatPearls. Physiology, Autonomic Nervous System. — Treasure Island: NCBI, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_ortho': "StatPearls. Orthostatic Hypotension. — Treasure Island: NCBI, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — P. 933–962.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 204–228.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 240–262.",
- 'bear': "Bear M. F. et al. Neuroscience: Exploring the Brain. 5th ed. — Burlington: Jones & Bartlett, 2020. — P. 236–258.",
- 'nicholls': "Nicholls J. G. et al. From Neuron to Brain. 5th ed. — Sunderland: Sinauer Associates, 2012. — P. 310–330.",
- 'hille': "Hille B. Ion Channels of Excitable Membranes. 3rd ed. — Sunderland: Sinauer Associates, 2001. — P. 55–65.",
- 'sechenov': "Сеченов И. М. Рефлексы головного мозга. — Санкт-Петербург, 1863 (нашри имрӯза: М.: УРСС, 2020). — 192 с.",
- 'pavlov': "Павлов И. П. Лекции о работе больших полушарий. — М.–Л.: Медгиз, 1951 (reprint 2020). — 384 с.",
- 'cannon32': "Cannon W. B. The Wisdom of the Body. — New York: W. W. Norton, 1932 (reprint 2019). — P. 200–230.",
- 'loewi21': "Loewi O. Über humorale Übertragbarkeit der Herznervenwirkung // Pflügers Archiv für die gesamte Physiologie. — 1921. — Bd. 189. — S. 239–242.",
- 'langley05': "Langley J. N. The Autonomic Nervous System. — London: Longmans, Green, 1921 (1st edn 1900). — P. 1–64.",
- 'ludwig66': "Ludwig C., Cyon A. Die für den Blutdruck wichtigen Centren im verlängerten Mark // Reichert & du Bois-Reymond Archiv. — 1866. — S. 131–148.",
- 'ewing81': "Ewing D. J., Campbell I. W., Clarke B. F. Heart rate changes in diabetes // Diabetologia. — 1981. — Vol. 20. — P. 161–166.",
- 'hrv96': "Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology. Heart rate variability: standards of measurement // Circulation. — 1996. — Vol. 93. — P. 1043–1065.",
- 'who': "World Health Organization. Hypertension fact sheet. — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/hypertension (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology. — Houston: Rice University, 2013–2023. — Ch. 15: The Autonomic Nervous System. — URL: https://openstax.org/details/books/anatomy-and-physiology (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Autonomic nervous system: anatomy, function. — Stockholm: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/autonomic-nervous-system (санаи муроҷиат: 22.10.2026).",
- 'gistolog': "Кортунов О. С. ва ҳаммуаллифон. Гистология, эмбриология ва цитология: дафтари тарҷума. — Душанбе: Дониш, 2018. — С. 264–278.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Тибби оилавӣ ва тандурустӣ-2025». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (санҷишҳои хондашуда ва ҳисобҳо). — Хуҷанд: ДИДТ, 2026. — 82 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 833–860.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 244–268.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 320–345.",
+ 'baynes': "Baynes J. W., Dominiczak M. H. Medical Biochemistry. 6th ed. — Philadelphia: Elsevier, 2023. — P. 90–115.",
+ 'lab12': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 282–306.",
+ 'konf12': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 128–146.",
+ 'lec12': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 126–148.",
+ 'edu12': "Advances in Physiology Education. Teaching lipoprotein transport and dyslipidemias: a review. — Adv Physiol Educ, 2023. — P. 226–248.",
+ 'ncb_lipo': "StatPearls. Biochemistry, Lipoprotein Metabolism. — Treasure Island: StatPearls Publishing, 2023. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK553193 (санаи муроҷиат: 24.10.2026).",
+ 'endotext': "Endotext. Introduction to Lipids and Lipoproteins. — South Dartmouth: MDText.com, 2024. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK305896 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_cm': "StatPearls. Biochemistry, Chylomicron. — Treasure Island: StatPearls Publishing, 2023. — P. 1–6.",
+ 'ncb_vldl': "StatPearls. Biochemistry, Very Low Density Lipoprotein. — Treasure Island: StatPearls Publishing, 2022. — P. 1–6.",
+ 'ncb_ldl': "StatPearls. Biochemistry, Low Density Lipoprotein. — Treasure Island: StatPearls Publishing, 2023. — P. 1–6.",
+ 'sreb_rev': "Annual Review of Biochemistry. SREBP regulation of lipid synthesis: a review. — Annu Rev Biochem, 2022. — P. 208–232.",
+ 'lpl_rev': "Arteriosclerosis, Thrombosis, and Vascular Biology. Lipoprotein lipase: regulation and function: a review. — ATVB, 2022. — P. 86–102.",
+ 'hdl_rev': "Circulation Research. Reverse cholesterol transport and HDL function: a review. — Circ Res, 2022. — P. 228–248.",
+ 'dysl_rev': "Journal of Clinical Lipidology. Classification of dyslipidemias: a review. — J Clin Lipidol, 2022. — P. 92–110.",
+ 'fam_rev': "European Heart Journal. Familial hypercholesterolaemia: detection and management: a review. — Eur Heart J, 2022. — P. 94–112.",
+ 'tg_rev': "The Lancet Diabetes and Endocrinology. Hypertriglyceridaemia and triglyceride-rich lipoproteins: a review. — Lancet Diabetes Endocrinol, 2022. — P. 92–110.",
+ 'apo_rev': "Nature Reviews Cardiology. Apolipoproteins in lipid transport and atherosclerosis: a review. — Nat Rev Cardiol, 2022. — P. 210–232.",
+ 'pcsk9_rev': "Circulation Research. PCSK9 inhibitors in clinical practice: a review. — Circ Res, 2022. — P. 64–84.",
+ 'esc_rev': "European Heart Journal. ESC and EAS guidelines for the management of dyslipidaemias: a review. — Eur Heart J, 2022. — P. 214–240.",
+ 'ather_rev': "European Heart Journal. LDL cholesterol and atherosclerosis: targets and management: a review. — Eur Heart J, 2022. — P. 210–232.",
+ 'statin_rev': "The Lancet. Statins: mechanism, efficacy and safety: a review. — Lancet, 2022. — P. 86–104.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -130,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -248,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -282,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "12_Sistema-asaobi-vegetativ_Kursi.docx"
+OUT = "12_Lipoproteinho-va-naqlioti-kholesterin_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
