@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 15) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 8 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,31 @@ sys.path.insert(0, '.')
 from content15 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 291–302.",
- 'guyton': "Hall J. E., Guyton A. C. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 660–672.",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — Vol. 2. — P. 1101–1128.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 333–351.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 331–344.",
- 'bekesy60': "Békésy G. von. Experiments in Hearing. — New York: McGraw-Hill, 1960 (repr. Toronto: Cowles, 1963). — P. 1–631.",
- 'helmholtz63': "Helmholtz H. von. Die Lehre von den Tonempfindungen als physiologische Grundlage für die Theorie der Musik. — Braunschweig: Vieweg, 1863. — S. 13–95.",
- 'moore82': "Moore B. C. J. An Introduction to the Psychology of Hearing. 2nd ed. — London: Academic Press, 1982. — P. 1–426.",
- 'pickles01': "Pickles J. O. An Introduction to the Physiology of Hearing. 3rd ed. — London: Emerald, 2012 (1st edn 1982). — P. 3–348.",
- 'hall92': "Hall J. W. Handbook of Auditory Brainstem Response. — San Diego: Singular, 1992. — P. 1–30.",
- 'nobel61': "The Nobel Prize in Physiology or Medicine in 1961: discoveries of the physical stimulation of the cochlea. — Stockholm: Nobel Prize, 1961. — URL: https://www.nobelprize.org/prizes/medicine/1961/summary/ (санаи муроҷиат: 22.10.2026).",
- 'who21': "Ташкилоти ҷаҳонии тандурустӣ. Ҳисоботи ҷаҳонӣ оид ба шунавоӣ. — Женева: ТҶС, 2021. — 156 с. — URL: https://www.who.int/publications/i/item/9789240020480 (санаи муроҷиат: 22.10.2026).",
- 'jcih19': "Кумитаи муштарак оид ба шунавоии навзодон. Позисияи расмӣ 2019. — ИМА, 2019. — URL: [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'niosh98': "NIOSH. Measures of noise exposure and the occupational noise standard (таҳрири 1998). — Синсиннатӣ: CDC, 1998. — URL: https://www.cdc.gov/niosh/docs/82-11077/ (санаи муроҷиат: 22.10.2026).",
- 'stat_aud': "StatPearls. Audiometry Interpretation. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_nbs': "StatPearls. Newborn Hearing Screening. — Treasure Island: NCBI, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Psychology 2e. — Houston: Rice University, 2013–2023. — Ch. 4: Sensation and Perception. — URL: https://openstax.org/details/books/psychology-2e (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Ear — anatomy, physiology and diseases. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-ear (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Оториноларингология ва масъалаҳои шунавоӣ». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (аудиометрияи хондашуда, ченкунии шовқ ва ҳисобҳо). — Хуҷанд: ДИДТ, 2026. — 45 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 843–882.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 320–345.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 218–243.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 232–254.",
+ 'lab15': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 334–352.",
+ 'konf15': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 182–198.",
+ 'lec15': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 192–214.",
+ 'edu15': "Advances in Physiology Education. Teaching lipid biochemistry and atherosclerosis: a review. — Adv Physiol Educ, 2023. — P. 296–318.",
+ 'ncb_lip': "StatPearls. Biochemistry, Lipids. — Treasure Island: StatPearls Publishing, 2023. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK525952 (санаи муроҷиат: 24.10.2026).",
+ 'endotext': "Endotext. Introduction to Lipids and Lipoproteins. — South Dartmouth: MDText.com, 2024. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK305896 (санаи муроҷиат: 24.10.2026).",
+ 'tg_rev': "Nature Reviews Molecular Cell Biology. White adipose tissue and triglyceride storage: a review. — Nat Rev Mol Cell Biol, 2022. — P. 96–112.",
+ 'diet_rev': "The Lancet. Dietary lipids, cardiovascular health and prevention: a review. — Lancet, 2022. — P. 54–72.",
+ 'bat_rev': "Cell Metabolism. Brown adipose tissue and thermogenesis: a review. — Cell Metab, 2022. — P. 76–90.",
+ 'eic_rev': "Nature Reviews Immunology. Eicosanoids in inflammation and immunity: a review. — Nat Rev Immunol, 2022. — P. 92–110.",
+ 'sph_rev': "Biochimica et Biophysica Acta. Sphingolipids, sphingolipidoses and membrane function: a review. — BBA Mol Cell Biol Lipids, 2022. — P. 88–104.",
+ 'mem_rev': "Biochimica et Biophysica Acta. Cholesterol in cell membranes: a review. — BBA Biomembr, 2022. — P. 184–202.",
+ 'ox_rev': "Free Radical Biology and Medicine. Lipid peroxidation and oxidized LDL: a review. — Free Radic Biol Med, 2022. — P. 212–230.",
+ 'ather_rev': "European Heart Journal. LDL cholesterol and atherosclerosis: targets and management: a review. — Eur Heart J, 2022. — P. 210–232.",
+ 'esc_rev': "European Heart Journal. ESC and EAS guidelines for the management of dyslipidaemias: a review. — Eur Heart J, 2022. — P. 214–240.",
+ 'ncb_ath': "StatPearls. Atherosclerosis. — Treasure Island: StatPearls Publishing, 2023. — P. 1–10.",
+ 'oxid_rev': "Nature Reviews Cardiology. Foam cells and plaque progression: a review. — Nat Rev Cardiol, 2022. — P. 214–236.",
+ 'risk_rev': "European Heart Journal. SCORE2 risk prediction algorithms: a review. — Eur Heart J, 2022. — P. 204–214.",
+ 'infl_rev': "Nature Reviews Cardiology. Inflammation in atherosclerosis: a review. — Nat Rev Cardiol, 2022. — P. 216–238.",
+ 'statin_rev': "The Lancet. Statins: mechanism, efficacy and safety: a review. — Lancet, 2022. — P. 86–104.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -126,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "15_Shunavi-fiziologiyai-uzvi-shunavo_Kursi.docx"
+OUT = "15-Lipidho-va-ateroskleroz_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
