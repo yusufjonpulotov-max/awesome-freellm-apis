@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 7 (нейрофизиология)) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 7 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,30 +13,30 @@ sys.path.insert(0, '.')
 from content07 import C
 
 REFS = {
- 'guyton': "Hall J. E., Hall M. E. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 55–92.",
- 'kandel': "Kandel E. R., Koester J. D., Mack S. H., Siegelbaum S. A. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — P. 24–120.",
- 'purves6': "Purves D. et al. Neuroscience. 6th ed. — New York: Oxford University Press, 2018. — P. 17–45.",
- 'boron': "Boron W. F., Boulpaep E. L. Medical Physiology. 3rd ed. — Philadelphia: Elsevier, 2017. — P. 314–360.",
- 'ganong': "Barrett K. E. et al. Ganong's Review of Medical Physiology. 26th ed. — New York: McGraw-Hill, 2019. — P. 224–260.",
- 'waxman': "Waxman S. G. Clinical Neuroanatomy. 29th ed. — New York: McGraw-Hill, 2020. — P. 23–61.",
- 'danilova': "Данилова Н. Н., Крылова А. Л. Физиология высшей нервной деятельности. — Ростов-на-Дону: Феникс, 2014. — С. 48–96.",
- 'shulgov': "Шульговский В. В. Основы нейрофизиологии. — Москва: Аспект Пресс, 2020. — С. 26–71.",
- 'lab7': "Маҷмуаи корҳои амалии физиология ва нейрофизиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 180–205.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 528–566.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 196–232.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 126–158.",
+ 'stryer': "Berg J. M., Tymoczko J. L., Gatto G. J., Stryer L. Biochemistry. 9th ed. — New York: W. H. Freeman, 2019. — P. 470–500.",
+ 'baynes': "Baynes J. W., Dominiczak M. H. Medical Biochemistry. 6th ed. — Philadelphia: Elsevier, 2023. — P. 204–232.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 240–268.",
+ 'tagan': "Таганович А. Д. и др. Биологическая химия. 3-е изд. — Минск: Вышэйшая школа, 2022. — С. 186–210.",
+ 'berez': "Березов Т. Т., Коровкин Б. Ф. Биологическая химия. — Москва: Юрайт, 2021. — С. 230–256.",
+ 'hakim': "Ҳакимов С. ва диг. Биохимияи тиббӣ. — Душанбе: Ирфон, 2022. — С. 182–204.",
+ 'lab7': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 180–205.",
  'konf7': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 45–68.",
- 'lec7': "Маърузаҳои курси физиологияи инсон ва ҳайвонот. — Хуҷанд: ДИДТ, 2026. — Саҳ. 30–52.",
- 'ncb_neu': "StatPearls. Neuroanatomy, Neuron Action Potential. — Treasure Island: StatPearls Publishing, 2024. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK538134 (санаи муроҷиат: 24.10.2026).",
- 'who_epi': "WHO. Epilepsy: key facts. — Geneva: World Health Organization, 2024. — P. 1–5. URL: https://www.who.int/news-room/fact-sheets/detail/epilepsy (санаи муроҷиат: 24.10.2026).",
- 'nice_neu': "NICE. Epilepsies in children, young people and adults (NG217). — London: National Institute for Health and Care Excellence, 2022. — P. 1–32. URL: https://www.nice.org.uk (санаи муроҷиат: 24.10.2026).",
- 'eeg_rev': "Clinical Neurophysiology. Standardization of adult EEG rhythms: a review. — Clin Neurophysiol, 2022. — P. 1210–1234.",
- 'glia_rev': "Nature Reviews Neuroscience. Astrocytes in health and disease: a review. — Nat Rev Neurosci, 2023. — P. 285–309.",
- 'myel_rev': "Nature Reviews Neurology. Remyelinating therapies in multiple sclerosis: a review. — Nat Rev Neurol, 2022. — P. 470–489.",
- 'syn_rev': "Nature Reviews Neuroscience. Synaptic vesicle release: mechanisms and regulation: a review. — Nat Rev Neurosci, 2021. — P. 360–384.",
- 'axon_rev': "Journal of Cell Biology. Axonal transport in health and disease: a review. — J Cell Biol, 2022. — P. 88–112.",
- 'ms_rev': "The Lancet. Multiple sclerosis: a seminar. — Lancet, 2023. — P. 259–277.",
- 'gbs_rev': "The Lancet. Guillain-Barré syndrome: a seminar. — Lancet, 2021. — P. 851–866.",
- 'pain_rev': "Pain. C-fiber nociceptors and chronic pain: mechanisms: a review. — Pain, 2022. — P. 512–534.",
- 'anest_rev': "Anesthesiology. Sodium channel mechanisms of local anesthetics: a review. — Anesthesiology, 2021. — P. 76–98.",
- 'edu7': "Advances in Physiology Education. A simple nerve conduction experiment for undergraduate teaching. — Adv Physiol Educ, 2023. — P. 140–152.",
+ 'lec7': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 30–52.",
+ 'ada': "American Diabetes Association. Standards of Care in Diabetes — 2024. — Diabetes Care, 2024. — Vol. 47. — P. S1–S321.",
+ 'who_db': "WHO. Diabetes: key facts. — Geneva: World Health Organization, 2024. — P. 1–5. URL: https://www.who.int/news-room/fact-sheets/detail/diabetes (санаи муроҷиат: 24.10.2026).",
+ 'idf': "International Diabetes Federation. IDF Diabetes Atlas. 10th ed. — Brussels: IDF, 2021. — P. 8–32. URL: https://diabetesatlas.org (санаи муроҷиат: 24.10.2026).",
+ 'ncb_dm': "StatPearls. Physiology, Insulin and Glucagon. — Treasure Island: StatPearls Publishing, 2024. — P. 1–18. URL: https://www.ncbi.nlm.nih.gov/books/NBK560588 (санаи муроҷиат: 24.10.2026).",
+ 'nice_db': "NICE. Type 2 diabetes in adults: management (NG28). — London: National Institute for Health and Care Excellence, 2022. — P. 1–30. URL: https://www.nice.org.uk (санаи муроҷиат: 24.10.2026).",
+ 'a1c_rev': "Diabetes Care. HbA1c standardization and clinical interpretation: a review. — Diabetes Care, 2022. — P. 120–134.",
+ 'cgm_rev': "The Lancet Diabetes and Endocrinology. Continuous glucose monitoring: a review. — Lancet Diabetes Endocrinol, 2023. — P. 1215–1232.",
+ 'keto_rev': "Diabetes, Metabolic Syndrome and Obesity. Diabetic ketoacidosis: mechanisms and management: a review. — Diabetes Metab Syndr Obes, 2022. — P. 115–132.",
+ 'comp_rev': "The Lancet. Microvascular and macrovascular complications of diabetes: a review. — Lancet, 2022. — P. 1130–1152.",
+ 'ins_rev': "Nature Reviews Endocrinology. Insulin resistance and beta-cell failure: a review. — Nat Rev Endocrinol, 2022. — P. 1020–1042.",
+ 'ogtt_rev': "Diabetes Research and Clinical Practice. Standardization of the oral glucose tolerance test: a review. — Diabetes Res Clin Pract, 2021. — P. 410–428.",
+ 'edu7': "Advances in Physiology Education. A simple glucose oxidase assay experiment for undergraduate teaching. — Adv Physiol Educ, 2023. — P. 138–152.",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -287,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "07_Soktoru-vazifai-nevronu-neirogliya_Kursi.docx"
+OUT = "07_Biokimiyai-diabeti-qand-hba1c_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
