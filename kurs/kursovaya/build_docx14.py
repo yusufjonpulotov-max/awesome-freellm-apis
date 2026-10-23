@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 14) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 8 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,31 @@ sys.path.insert(0, '.')
 from content14 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 271–290.",
- 'guyton': "Hall J. E., Guyton A. C. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 647–659.",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — Vol. 2. — P. 1069–1100.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 303–331.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 301–312.",
- 'davson84': "Davson H., Cunningham J. G. Jr. Physiology of the Eye and Visual Perception. 2nd ed. — New York: Harper & Row, 1984. — P. 3–52.",
- 'helmholtz67': "Helmholtz H. von. Handbuch der physiologischen Optik. — Leipzig: Wilhelm Engelmann (Reprint Geiger), 1867. — S. 3–88.",
- 'young1802': "Young T. Course of Lectures on Natural Philosophy and the Mechanical Arts. Vol. 2. — London: Johnson, 1802. — P. 15.",
- 'kepler1604': "Kepler J. Ad Vitellionem paralipomena, quibus astronomiae pars optica traditur. — Frankfurt: Jamnitzer, 1604. — P. 1–14.",
- 'nobel67': "The Nobel Prize in Physiology or Medicine in 1967: discoveries of physiological primary processes in the eye. — Stockholm: Nobel Prize, 1967. — URL: https://www.nobelprize.org/prizes/medicine/1967/summary/ (санаи муроҷиат: 22.10.2026).",
- 'ishihara37': "Ishihara S. Tests for Colour-Blindness. — Tokyo: Kanehara & Co., 1937 (repr. 2021). — 24 pl.",
- 'borish70': "Borish I. M. Optical Refinement of Corrections. 2nd ed. — Houston: Professional Press, 1970. — P. 5–76.",
- 'traquett49': "Traquett H. M. An Introduction to Clinical Perimetry. 7th ed. — London: Henry Kimpton, 1949. — P. 3–30.",
- 'who': "Ташкилоти ҷаҳонии тандурустӣ. Ҳисоботи ҷаҳонӣ оид ба саломатии чашм. — Женева: ТҶС, 2024. — 12 с. — URL: https://www.who.int/publications/i/item/9789240057400 (санаи муроҷиат: 22.10.2026).",
- 'stat_eye': "StatPearls. Physiology, Vision. — Treasure Island: NCBI, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_refr': "StatPearls. Refractive Errors. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Psychology 2e. — Houston: Rice University, 2013–2023. — Ch. 4: Sensation and Perception. — URL: https://openstax.org/details/books/psychology-2e (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. The eye — anatomy, physiology and diseases. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-eye (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Саломатии чашм ва пешгирии бемориҳои он». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (ченкуниҳои биниш, санҷишҳои оптикавӣ ва ҳисобҳо). — Хуҷанд: ДИДТ, 2026. — 45 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 849–882.",
+ 'stryer': "Berg J. M., Tymoczko J. L., Gatto G. J., Stryer L. Biochemistry. 9th ed. — New York: W. H. Freeman, 2019. — P. 780–806.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 218–243.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 350–375.",
+ 'baynes': "Baynes J. W., Dominiczak M. H. Medical Biochemistry. 6th ed. — Philadelphia: Elsevier, 2023. — P. 115–130.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 248–270.",
+ 'tagan': "Таганович А. Д. и др. Биологическая химия. 3-е изд. — Минск: Вышэйшая школа, 2022. — С. 202–224.",
+ 'berez': "Березов Т. Т., Коровкин Б. Ф. Биологическая химия. — Москва: Юрайт, 2021. — С. 210–232.",
+ 'hakim': "Ҳакимов С. ва диг. Биохимияи тиббӣ. — Душанбе: Ирфон, 2022. — С. 218–240.",
+ 'lab14': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 318–332.",
+ 'konf14': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 166–182.",
+ 'lec14': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 170–192.",
+ 'edu14': "Advances in Physiology Education. Teaching fatty acid oxidation and ketogenesis: a review. — Adv Physiol Educ, 2023. — P. 274–296.",
+ 'ncb_fao': "StatPearls. Biochemistry, Fatty Acid Oxidation. — Treasure Island: StatPearls Publishing, 2023. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK556002 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_ket': "StatPearls. Biochemistry, Ketogenesis. — Treasure Island: StatPearls Publishing, 2025. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK493179 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_carn': "StatPearls. Carnitine Deficiency. — Treasure Island: StatPearls Publishing, 2023. — P. 1–6.",
+ 'fao_rev': "Biochemical Journal. Regulation of fatty acid oxidation: a review. — Biochem J, 2022. — P. 48–64.",
+ 'ket_rev': "Trends in Endocrinology and Metabolism. Ketone body metabolism and the brain: a review. — Trends Endocrinol Metab, 2022. — P. 84–98.",
+ 'cpt_rev': "Journal of Biological Chemistry. Carnitine palmitoyltransferase 1 and malonyl-CoA: a review. — J Biol Chem, 2022. — P. 50–64.",
+ 'mcad_rev': "Journal of Inherited Metabolic Disease. Medium-chain acyl-CoA dehydrogenase deficiency: a review. — J Inherit Metab Dis, 2022. — P. 60–76.",
+ 'dka_rev': "The Lancet Diabetes and Endocrinology. Diabetic ketoacidosis: pathophysiology and management: a review. — Lancet Diabetes Endocrinol, 2022. — P. 74–90.",
+ 'perox_rev': "Biochimica et Biophysica Acta. Peroxisomal fatty acid oxidation: a review. — BBA Mol Cell Res, 2022. — P. 40–56.",
+ 'fast_rev': "Annual Review of Nutrition. Fasting metabolism and metabolic switching: a review. — Annu Rev Nutr, 2022. — P. 68–86.",
+ 'glu_rev': "Nature Reviews Molecular Cell Biology. ATP synthase and energy yield of oxidation: a review. — Nat Rev Mol Cell Biol, 2022. — P. 90–108.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -126,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "14_Binoish-fiziologiyai-uzvi-bino_Kursi.docx"
+OUT = "14-Beta-oksidshavii-kislotahoi-charb_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
