@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 17) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 17 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,31 @@ sys.path.insert(0, '.')
 from content17 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 291–302.",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — Vol. 1. — P. 1245–1330.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 881–900.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 191–200.",
- 'squire09': "Squire L. R., Kandel E. R. Memory: From Mind to Molecules. 2nd ed. — Greenwood Village: Roberts & Co., 2009. — P. 1–507.",
- 'ebbinghaus1885': "Эббингҳаус Г. М. Муқаддамаи таҷрибавӣ дар хотира. — Лейпсиг: Дункер ва Ҳумболт, 1885. — 172 С.",
- 'miller56': "Miller G. A. The magical number seven, plus or minus two: some limits on our capacity for processing information. // Psychological Review. 1956. — Vol. 63(2). — P. 81–97.",
- 'broadbent58': "Broadbent D. E. Perception and Communication. — London: Pergamon Press, 1958. — P. 1–377.",
- 'treisman64': "Treisman A. M. Selective attention in man. // British Medical Bulletin. 1964. — Vol. 20(1). — P. 12–16.",
- 'sperling60': "Sperling G. The information available in brief visual presentations. // Psychological Monographs. 1960. — Vol. 74(11). — P. 1–29.",
- 'milner57': "Scoville W. B., Milner B. Loss of recent memory after bilateral hippocampal lesions. // Journal of Neurology, Neurosurgery and Psychiatry. 1957. — Vol. 20(1). — P. 11–21.",
- 'baddeley74': "Baddeley A. D., Hitch G. J. Working memory. // In: Bower G. H. (ed.) The Psychology of Learning and Motivation. Vol. 8. — New York: Academic Press, 1974. — P. 47–89.",
- 'who23': "Ташкилоти ҷаҳонии тандурустӣ. Маълумотнома: деменсия. — Женева: ТҶС, 2023. — URL: https://www.who.int/news-room/fact-sheets/detail/dementia (санаи муроҷиат: 22.10.2026).",
- 'stat_mem': "StatPearls. Physiology, Memory. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_ret': "StatPearls. Neuroanatomy, Reticular Formation. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'moore82': "Moore K. L., Dalley A. F., Agur A. M. R. Clinically Oriented Anatomy. 8th ed. — Philadelphia: Wolters Kluwer, 2018. — P. 1–1344.",
- 'openstax': "OpenStax. Psychology 2e. — Houston: Rice University, 2013–2023. — Ch. 4: Sensation and Perception; Ch. 8: Memory and Learning. — URL: https://openstax.org/details/books/psychology-2e (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Limbic system — anatomy, functions and clinical notes. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-limbic-system (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (санҷиши диққат, ёдгирӣ ва ҳисобҳои корӣ). — Хуҷанд: ДИДТ, 2026. — 45 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 366–398.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 508–540.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 330–360.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 268–290.",
+ 'lab17': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 374–392.",
+ 'konf17': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 214–228.",
+ 'lec17': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 240–262.",
+ 'edu17': "Advances in Physiology Education. Teaching fat-soluble vitamins and metabolism: a review. — Adv Physiol Educ, 2023. — P. 340–358.",
+ 'ncb_fsv': "Dela Cruz E., Gupta V. Biochemistry, Fat Soluble Vitamins. StatPearls. — Treasure Island: StatPearls Publishing, 2022. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK534869 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_vitd': "Kaur J., Khare S., Givler A. Vitamin D Deficiency. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–16. URL: https://www.ncbi.nlm.nih.gov/books/NBK532266 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_vitk': "Al-Zubaidi N., Ghassempour N. Vitamin K Deficiency in Neonates and Adults. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK536983 (санаи муроҷиат: 24.10.2026).",
+ 'ret_rev': "Nutrients. Vitamin A: metabolism, transport and clinical deficiency: a review. — Nutrients, 2023. — P. 14–32.",
+ 'd_rev': "New England Journal of Medicine. Vitamin D: extra-skeletal actions and metabolism: a review. — N Engl J Med, 2022. — P. 22–36.",
+ 'e_rev': "Free Radical Biology and Medicine. Vitamin E and lipid peroxidation defense: a review. — Free Radic Biol Med, 2022. — P. 16–34.",
+ 'k_rev': "Blood. Vitamin K-dependent proteins and coagulation: a review. — Blood, 2023. — P. 18–36.",
+ 'abs_rev': "Clinical Chemistry and Laboratory Medicine. Fat-soluble vitamin absorption in malabsorption: a review. — Clin Chem Lab Med, 2023. — P. 6–24.",
+ 'bone_rev': "Calcified Tissue International. Vitamin D, calcium homeostasis and bone health: a review. — Calcif Tissue Int, 2023. — P. 6–24.",
+ 'tox_rev': "Toxicology Letters. Hypervitaminosis A and D: clinical toxicology: a review. — Toxicol Lett, 2022. — P. 12–30.",
+ 'lab_rev': "Clinical Chemistry. Laboratory biomarkers of fat-soluble vitamin status: a review. — Clin Chem, 2023. — P. 14–32.",
+ 'diet_rev': "American Journal of Clinical Nutrition. Dietary sources of fat-soluble vitamins: a review. — Am J Clin Nutr, 2022. — P. 26–44.",
+ 'rda_rev': "American Journal of Clinical Nutrition. Dietary reference intakes for fat-soluble vitamins: a review. — Am J Clin Nutr, 2022. — P. 118–136.",
+ 'preg_rev': "Birth Defects Research. Retinoids, teratogenicity and pregnancy: a review. — Birth Defects Res, 2022. — P. 12–28.",
+ 'neo_rev': "Pediatrics. Vitamin K prophylaxis in newborns: a review. — Pediatrics, 2023. — P. 4–18.",
+ 'chole_rev': "Clinical Res Hepatology Gastroenterology. Cholestasis and fat-soluble vitamin deficiency: a review. — Clin Res Hepatol Gastroenterol, 2023. — P. 10–26.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -126,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "17_Diqqat-va-xotira-ravandhoi-shinokti_Kursi.docx"
+OUT = "17-Vitaminhoi-ravghanhal_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
