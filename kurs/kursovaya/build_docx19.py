@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 19) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 18 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,30 @@ sys.path.insert(0, '.')
 from content19 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 1. — Душанбе: Маориф, 2001. — С. 15–60.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 409–437.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 421–450.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 437–461.",
- 'harvey1628': "Harvey W. Exercitatio Anatomica de Motu Cordis et Sanguinis in Animalibus. — Frankfurt: Fitzer, 1628. — P. 1–112.",
- 'landsteiner01': "Landsteiner K. Über Agglutinationserscheinungen des normalen menschlichen Blutes. // Wiener klinische Wochenschrift. 1901. — Bd. 14. — S. 1132–1134.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 151–171.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 139–164.",
- 'who23': "Ташкилоти ҷаҳонии тандурустӣ. Маълумотнома: камхунӣ (анемия). — Женева: ТҶС, 2023. — URL: https://www.who.int/news-room/fact-sheets/detail/anaemia (санаи муроҷиат: 22.10.2026).",
- 'nhlbi': "National Heart, Lung, and Blood Institute. Blood, blood disorders and blood donations. — Bethesda: NIH, 2023. — URL: https://www.nhlbi.nih.gov/health (санаи муроҷиат: 22.10.2026).",
- 'stat_hist': "StatPearls [Интернет]. Histology, Blood Cells. — Treasure Island (FL): StatPearls Publishing, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ (санаи муроҷиат: 22.10.2026).",
- 'stat_cbc': "StatPearls [Интернет]. Complete Blood Count (CBC). — Treasure Island (FL): StatPearls Publishing, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ (санаи муроҷиат: 22.10.2026).",
- 'stat_hemo': "StatPearls [Интернет]. Physiology, Hemoglobin. — Treasure Island (FL): StatPearls Publishing, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Blood — composition, functions, formed elements. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/physiology (санаи муроҷиат: 22.10.2026).",
- 'britannica': "Encyclopaedia Britannica. Blood — composition, functions and disorders. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/blood (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 18: The Cardiovascular System: Blood. — URL: https://openstax.org/books/anatomy-and-physiology-2e/pages/18-1-an-introduction-to-the-blood-transport-system (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (хун: ченкуниҳои гематологӣ). — Хуҷанд: ДИДТ, 2026. — 72 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 940–966.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 496–524.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 488–512.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 381–406.",
+ 'lab19': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 413–430.",
+ 'konf19': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 243–256.",
+ 'lec19': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 286–305.",
+ 'edu19': "Advances in Physiology Education. Teaching mineral metabolism: calcium, phosphate and magnesium: a review. — Adv Physiol Educ, 2023. — P. 377–396.",
+ 'ncb_calphys': "Christensen S. K. Physiology, Calcium. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–9. URL: https://www.ncbi.nlm.nih.gov/books/NBK482128 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_hypocalc': "Cifuentes M., Patel P. Hypocalcemia. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK430912 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_hypomag': "Abbas M. R., Rehman K. U., Wills B. K. Hypomagnesemia. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–8. URL: https://www.ncbi.nlm.nih.gov/books/NBK500003 (санаи муроҷиат: 24.10.2026).",
+ 'bone_rev': "Journal of Bone and Mineral Research. Osteoblasts, osteoclasts and RANKL signalling: a review. — JBMR, 2023. — P. 4–24.",
+ 'pth_rev': "Endocrine Reviews. Parathyroid hormone and calcium homeostasis: a review. — Endocr Rev, 2022. — P. 210–232.",
+ 'vitd_rev': "The Lancet Diabetes & Endocrinology. Vitamin D metabolism and activation: a review. — Lancet Diabetes Endocrinol, 2023. — P. 6–22.",
+ 'ca_rev': "Physiological Reviews. Intestinal calcium absorption and calbindin: a review. — Physiol Rev, 2022. — P. 42–70.",
+ 'p_rev': "Kidney International. Renal phosphate handling and FGF23: a review. — Kidney Int, 2023. — P. 6–26.",
+ 'mg_rev': "Nutrients. Magnesium metabolism, deficiency and clinical impact: a review. — Nutrients, 2023. — P. 4–26.",
+ 'hypo_rev': "The Journal of Clinical Endocrinology & Metabolism. Hypocalcemia: diagnosis and management: a review. — JCEM, 2022. — P. 137–158.",
+ 'hyper_rev': "Clinical Endocrinology. Hypercalcemia of malignancy and primary hyperparathyroidism: a review. — Clinical Endocrinol, 2023. — P. 210–230.",
+ 'lab_rev': "Clinical Chemistry. Laboratory assessment of mineral metabolism: a review. — Clin Chem, 2023. — P. 34–54.",
+ 'diet_rev': "American Journal of Clinical Nutrition. Dietary calcium, phosphate and magnesium: sources and requirements: a review. — Am J Clin Nutr, 2023. — P. 42–60.",
+ 'drug_rev': "Drugs. Calcium and vitamin D supplementation: pharmacology: a review. — Drugs, 2022. — P. 6–22.",
+ 'treat_rev': "The Lancet. Management of calcium disorders: a review. — Lancet, 2023. — P. 210–228.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -126,12 +128,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +246,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +286,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "19_Tarkibi-xun-plazma-va-elementhoi-shaklli_Kursi.docx"
+OUT = "19-Kalsij-fosfor-va-magnij_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
