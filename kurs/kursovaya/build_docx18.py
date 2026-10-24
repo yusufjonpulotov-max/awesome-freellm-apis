@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 18) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 18 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,31 @@ sys.path.insert(0, '.')
 from content18 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 303–348.",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — Vol. 2. — P. 1597–1704.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 1135–1154.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 185–201.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Тиббии муосир: дар 2 китоб. Китоби 2 / пер. аз англ. — М.: ГЭОТАР-Медиа, 2021. — С. 759–766.",
- 'sechenov': "Сеченов И. М. Рефлексы головного мозга. — СПб.: Лань, 2021. — 112 с.",
- 'pavlov': "Павлов И. П. Полное собрание сочинений. 2-е изд. — М.—Л.: Медгиз, 1949. — Т. 3. — С. 1–488.",
- 'asratyan': "Асратян Э. А. Лекции по физиологии условных рефлексов. — М.: Медгиз, 1970. — 344 с.",
- 'skinner': "Skinner B. F. The Behavior of Organisms: An Experimental Analysis. — New York: Appleton-Century-Crofts, 1938. — P. 1–461.",
- 'domjan': "Domjan M. The Principles of Learning and Behavior. 7th ed. — Stamford: Cengage Learning, 2015. — P. 1–544.",
- 'homskaya': "Хомская Е. Д. Нейропсихология: учебник для вузов. 7-е изд. — СПб.: Питер, 2016. — 736 с.",
- 'moore82': "Moore K. L., Dalley A. F., Agur A. M. R. Clinically Oriented Anatomy. 8th ed. — Philadelphia: Wolters Kluwer, 2018. — P. 1–1344.",
- 'openstax': "OpenStax. Psychology 2e. — Houston: Rice University, 2013–2023. — Ch. 9: Learning. — URL: https://openstax.org/books/psychology-2e/pages/9-1-how-learning-works (санаи муроҷиат: 22.10.2026).",
- 'britannica': "Encyclopaedia Britannica. Classical conditioning. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/classical-conditioning (санаи муроҷиат: 22.10.2026).",
- 'simplypsych': "McLeod S. Classical conditioning (Pavlov). // Simply Psychology. — 2023. — URL: https://www.simplypsychology.org/classical-conditioning.html (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Reflex arc — anatomy, pathways, clinical relevance. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-reflex-arc (санаи муроҷиат: 22.10.2026).",
- 'stat_ref': "StatPearls. Neuroanatomy, Stretch Reflex. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'who23': "Ташкилоти ҷаҳонии тандурустӣ. Инкишофи кӯдакон: парвариши ҷавобгӯ. — Женева: ТҶС, 2023. — URL: https://www.who.int/health-topics/early-childhood-development (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (рефлексҳои шартӣ: санҷиш дар ҷуфт). — Хуҷанд: ДИДТ, 2026. — 45 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 940–966.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 456–490.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 442–470.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 358–380.",
+ 'lab18': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 393–412.",
+ 'konf18': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 228–242.",
+ 'lec18': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 263–285.",
+ 'edu18': "Advances in Physiology Education. Teaching iron metabolism and anemia: a review. — Adv Physiol Educ, 2023. — P. 359–376.",
+ 'ncb_ironabs': "Abu-Samra O., Anand S. Biochemistry, Iron Absorption. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–7. URL: https://www.ncbi.nlm.nih.gov/books/NBK448204 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_ida': "Warner M. J., Kamran M. T. Iron Deficiency and Microcytic Hypochromic Anemia. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK560876 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_ironload': "Chang R., Sullivan K. M. Iron Overload and Toxicity. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–14. URL: https://www.ncbi.nlm.nih.gov/books/NBK526131 (санаи муроҷиат: 24.10.2026).",
+ 'hepc_rev': "Nutrients. Hepcidin: the master regulator of iron homeostasis: a review. — Nutrients, 2023. — P. 4–22.",
+ 'tf_rev': "Blood. Transferrin, ferroportin and cellular iron export: a review. — Blood, 2023. — P. 8–28.",
+ 'fer_rev': "Biochimica et Biophysica Acta. Ferritin structure and iron storage: a review. — BBA Gen Subj, 2022. — P. 6–24.",
+ 'heme_rev': "Blood Cells Molecules and Diseases. Heme biosynthesis and porphyrias: a review. — Blood Cells Mol Dis, 2022. — P. 4–20.",
+ 'ery_rev': "Blood. Erythropoiesis, EPO and iron supply: a review. — Blood, 2023. — P. 4–26.",
+ 'anemia_rev': "The Lancet. Iron deficiency anaemia: assessment and prevention: a review. — Lancet, 2023. — P. 4–22.",
+ 'hem_rev': "Journal of Hepatology. Hereditary hemochromatosis: diagnosis and management: a review. — J Hepatol, 2023. — P. 210–230.",
+ 'diet_rev': "American Journal of Clinical Nutrition. Dietary iron: sources, bioavailability and enhancers: a review. — Am J Clin Nutr, 2023. — P. 42–60.",
+ 'rda_rev': "American Journal of Clinical Nutrition. Dietary reference intakes for iron and trace minerals: a review. — Am J Clin Nutr, 2022. — P. 137–158.",
+ 'preg_rev': "Nutrients. Iron in pregnancy and menstrual blood loss: a review. — Nutrients, 2023. — P. 6–24.",
+ 'treat_rev': "The Lancet Haematology. Iron supplementation: oral and intravenous therapy: a review. — Lancet Haematol, 2023. — P. 6–24.",
+ 'lab_rev': "Clinical Chemistry. Laboratory assessment of iron status: a review. — Clin Chem, 2023. — P. 34–54.",
+ 'tox_rev': "Toxicology Letters. Acute iron toxicity and the Fenton reaction: a review. — Toxicol Lett, 2022. — P. 6–22.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -126,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "18_Reflexhoi-sharti-va-ghayrisharti-faoliyati-olii-nerv_Kursi.docx"
+OUT = "18-Mubodilai-ohan_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
