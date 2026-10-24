@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 19) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 18 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,29 +13,30 @@ sys.path.insert(0, '.')
 from content20 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 61–96.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 438–462.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 451–478.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 462–492.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 172–196.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 165–188.",
- 'landsteiner01': "Landsteiner K. Über Agglutinationserscheinungen des normalen menschlichen Blutes. // Wiener klinische Wochenschrift. 1901. — Bd. 14. — S. 1132–1134.",
- 'harvey1628': "Harvey W. Exercitatio Anatomica de Motu Cordis et Sanguinis in Animalibus. — Frankfurt: Fitzer, 1628. — P. 1–112.",
- 'who23': "Ташкилоти ҷаҳонии тандурустӣ. Маълумотнома: камхунӣ (анемия). — Женева: ТҶС, 2023. — URL: https://www.who.int/news-room/fact-sheets/detail/anaemia (санаи муроҷиат: 22.10.2026).",
- 'who_iron': "WHO. Guideline: Daily iron and folic acid supplementation in pregnant women. — Geneva: WHO, 2020. — 32 p. — URL: https://www.who.int/publications (санаи муроҷиат: 22.10.2026).",
- 'nhlbi': "National Heart, Lung, and Blood Institute. Anemia — causes, symptoms and treatment. — Bethesda: NIH, 2023. — URL: https://www.nhlbi.nih.gov/health/anemia (санаи муроҷиат: 22.10.2026).",
- 'stat_anemia': "StatPearls [Интернет]. Anemia. — Treasure Island (FL): StatPearls Publishing, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ (санаи муроҷиат: 22.10.2026).",
- 'stat_hemo': "StatPearls [Интернет]. Physiology, Hemoglobin. — Treasure Island (FL): StatPearls Publishing, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ (санаи муроҷиат: 22.10.2026).",
- 'stat_cbc': "StatPearls [Интернет]. Complete Blood Count (CBC). — Treasure Island (FL): StatPearls Publishing, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Erythrocytes — structure, function and life cycle. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/physiology (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 18: The Cardiovascular System: Blood. — URL: https://openstax.org/books/anatomy-and-physiology-2e/pages/18-3-erythrocytes (санаи муроҷиат: 22.10.2026).",
- 'britannica': "Encyclopaedia Britannica. Hemoglobin — structure, function and variants. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/hemoglobin (санаи муроҷиат: 22.10.2026).",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (хун: гемоглобин ва эритротсит). — Хуҷанд: ДИДТ, 2026. — 78 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 900–928.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 540–570.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 528–552.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 407–430.",
+ 'lab20': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 431–448.",
+ 'konf20': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 257–270.",
+ 'lec20': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 306–325.",
+ 'edu20': "Advances in Physiology Education. Teaching purine metabolism and gout: a review. — Adv Physiol Educ, 2023. — P. 377–396.",
+ 'ncb_gout': "FitzGerald J. D., Dalbeth N. Gout. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–18. URL: https://www.ncbi.nlm.nih.gov/books/NBK546606 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_hyper': "Bardin T., Richette P. Hyperuricemia. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–14. URL: https://www.ncbi.nlm.nih.gov/books/NBK459218 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_stone': "Shmerling R. H., Stern M. M. Uric Acid Nephrolithiasis. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK560726 (санаи муроҷиат: 24.10.2026).",
+ 'eular': "Annals of the Rheumatic Diseases. EULAR recommendations for the management of gout: a review. — Ann Rheum Dis, 2023. — P. 4–22.",
+ 'pur_rev': "Nature Reviews Rheumatology. Purine metabolism and urate homeostasis: a review. — Nat Rev Rheumatol, 2022. — P. 4–24.",
+ 'xo_rev': "Biochemical Pharmacology. Xanthine oxidase: structure and inhibition: a review. — Biochem Pharmacol, 2022. — P. 6–24.",
+ 'urat_rev': "Kidney International. Renal urate handling: URAT1 and GLUT9: a review. — Kidney Int, 2023. — P. 6–28.",
+ 'flr_rev': "Arthritis & Rheumatology. Management of acute gout flares: a review. — Arthritis Rheumatol, 2023. — P. 34–56.",
+ 'colc_rev': "The Lancet Rheumatology. Low-dose colchicine in gout flares: a review. — Lancet Rheumatol, 2022. — P. 6–22.",
+ 'allo_rev': "Seminars in Arthritis and Rheumatism. Allopurinol dose escalation and treat-to-target in gout: a review. — Semin Arthritis Rheum, 2023. — P. 210–232.",
+ 'febu_rev': "The Lancet. Febuxostat versus allopurinol in gout: a review. — Lancet, 2022. — P. 137–158.",
+ 'lith_rev': "World Journal of Urology. Uric acid nephrolithiasis: pathogenesis and prevention: a review. — World J Urol, 2023. — P. 6–24.",
+ 'comor_rev': "Rheumatology (Oxford). Comorbidities of gout and hyperuricemia: a review. — Rheumatology (Oxford), 2022. — P. 210–228.",
+ 'diet_rev': "American Journal of Clinical Nutrition. Dietary purines, alcohol and gout risk: a review. — Am J Clin Nutr, 2023. — P. 42–60.",
+ 'lab_rev': "Clinical Chemistry. Laboratory assessment of urate metabolism: a review. — Clin Chem, 2023. — P. 34–54.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -127,12 +128,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -245,6 +246,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -279,7 +286,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "20_Eritrotsitho-va-gemoglobin_Kursi.docx"
+OUT = "20-Podagra-va-mubodilai-purin_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
