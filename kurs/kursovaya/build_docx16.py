@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 16) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 16 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,31 @@ sys.path.insert(0, '.')
 from content16 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 291–302.",
- 'kandel': "Kandel E. R. et al. Principles of Neural Science. 6th ed. — New York: McGraw-Hill, 2021. — Vol. 2. — P. 1129–1175.",
- 'purves': "Purves D. et al. Neuroscience. 6th ed. — Sunderland: Sinauer Associates, 2019. — P. 353–373.",
- 'guyton': "Hall J. E., Guyton A. C. Guyton and Hall Textbook of Medical Physiology. 14th ed. — Philadelphia: Elsevier, 2021. — P. 673–686.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 345–352.",
- 'moore82': "Moore K. L., Dalley A. F., Agur A. M. R. Clinically Oriented Anatomy. 8th ed. — Philadelphia: Wolters Kluwer, 2018. — P. 1–1344.",
- 'buckaxel91': "Buck L., Axel R. A novel multigene family may encode odorant receptors: a molecular basis for odor recognition. // Cell. 1991. — Vol. 65(1). — P. 175–187.",
- 'firest01': "Firestein S. How the olfactory system makes sense of the world. // Nature. 2001. — Vol. 413. — P. 165–173.",
- 'nobel04': "The Nobel Prize in Physiology or Medicine 2004: Richard Axel and Linda Buck for the organization of the olfactory system. — Stockholm: Nobel Prize, 2004. — URL: https://www.nobelprize.org/prizes/medicine/2004/summary/ (санаи муроҷиат: 22.10.2026).",
- 'doty84': "Doty R. L. et al. Multi-institutional normalization study of the 40-item smell identification test. // Archives of Otolaryngology. 1984. — Vol. 110(3). — P. 149–155.",
- 'doty03': "Doty R. L. (ed.). Handbook of Olfaction and Gustation. 2nd ed. — New York: Marcel Dekker, 2003. — P. 1–832.",
- 'hummel07': "Hummel T. et al. «Sniffin' Sticks»: normative data and olfactory testing standards. // European Archives of Otorhinolaryngology. 2007. — Vol. 264. — P. 421–426.",
- 'stat_olf': "StatPearls. Physiology, Olfaction. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_taste': "StatPearls. Physiology, Taste. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'stat_bulb': "StatPearls. Anatomy, Olfactory Bulb. — Treasure Island: NCBI, 2023. — URL: https://www.ncbi.nlm.nih.gov/books/ [рақами мақола — дақиқ кардан лозим] (санаи муроҷиат: 22.10.2026).",
- 'nidcd': "National Institute on Deafness and Other Communication Disorders. Facts about smell and taste. — Bethesda: NIH, 2024. — URL: https://www.nidcd.nih.gov/health/facts-about-smell-and-taste (санаи муроҷиат: 22.10.2026).",
- 'openstax': "OpenStax. Psychology 2e. — Houston: Rice University, 2013–2023. — Ch. 4: Sensation and Perception. — URL: https://openstax.org/details/books/psychology-2e (санаи муроҷиат: 22.10.2026).",
- 'kenhub': "Kenhub. Nose — anatomy, olfactory pathway and clinical notes. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-nose (санаи муроҷиат: 22.10.2026).",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Масъалаҳои оториноларингология ва бемориҳои таъм». — Душанбе, 2025. — 312 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (бӯйсинҷӣ, таъмсинҷӣ ва ҳисобҳои гигиенӣ). — Хуҷанд: ДИДТ, 2026. — 45 варақ.",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 900–928.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 540–570.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 360–385.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 286–305.",
+ 'lab16': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 354–372.",
+ 'konf16': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 198–212.",
+ 'lec16': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: ДИДТ, 2026. — Саҳ. 216–238.",
+ 'edu16': "Advances in Physiology Education. Teaching water-soluble vitamins and coenzymes: a review. — Adv Physiol Educ, 2023. — P. 318–336.",
+ 'ncb_wsv': "Lykstad J., Sharma S. Biochemistry, Water Soluble Vitamins. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–9. URL: https://www.ncbi.nlm.nih.gov/books/NBK538510 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_b12d': "Ankar A., Kumar A. Vitamin B12 Deficiency. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–14. URL: https://www.ncbi.nlm.nih.gov/books/NBK441923 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_vitc': "Maxfield L., Crane J. S. Vitamin C (Ascorbic Acid). StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK499877 (санаи муроҷиат: 24.10.2026).",
+ 'thia_rev': "Nutrients. Thiamine in energy metabolism and clinical deficiency: a review. — Nutrients, 2023. — P. 34–52.",
+ 'rib_rev': "Frontiers in Nutrition. Riboflavin status and FAD-dependent enzymes: a review. — Front Nutr, 2023. — P. 88–104.",
+ 'nia_rev': "Annual Review of Nutrition. Niacin and NAD metabolism: a review. — Annu Rev Nutr, 2023. — P. 92–112.",
+ 'pan_rev': "Biochemistry (Moscow). Pantothenic acid and coenzyme A biosynthesis: a review. — Biochemistry, 2022. — P. 412–430.",
+ 'bio_rev': "Annual Review of Nutrition. Biotin: metabolism, transport and clinical aspects: a review. — Annu Rev Nutr, 2022. — P. 76–98.",
+ 'b6_rev': "European Journal of Clinical Nutrition. Vitamin B6 status and PLP enzymes: a review. — Eur J Clin Nutr, 2023. — P. 60–78.",
+ 'fol_rev': "New England Journal of Medicine. Folate, one-carbon metabolism and neural tube defects: a review. — N Engl J Med, 2022. — P. 116–132.",
+ 'b12_rev': "Blood. Cobalamin metabolism, transport and deficiency: a review. — Blood, 2023. — P. 78–96.",
+ 'c_rev': "Antioxidants. Vitamin C: transport, body pools and immune function: a review. — Antioxidants, 2023. — P. 120–142.",
+ 'def_rev': "Clinical Chemistry. Biomarkers of B-vitamin status in laboratory practice: a review. — Clin Chem, 2023. — P. 402–424.",
+ 'rda_rev': "American Journal of Clinical Nutrition. Dietary reference intakes for water-soluble vitamins: a review. — Am J Clin Nutr, 2022. — P. 304–324.",
+ 'preg_rev': "Cochrane Database of Systematic Reviews. Folate supplementation before and during pregnancy: a review. — Cochrane Database Syst Rev, 2023. — P. 1–24.",
+ 'spo_rev': "Nutrients. Exercise, B-vitamin demand and athletic performance: a review. — Nutrients, 2023. — P. 240–258.",
 }
-
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
 def all_strings(x):
@@ -126,12 +129,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +247,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +287,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "16_Buy-va-taom-fiziologiyai-uzvi-hasosai-kimyavi_Kursi.docx"
+OUT = "16-Vitaminhoi-obhal_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
