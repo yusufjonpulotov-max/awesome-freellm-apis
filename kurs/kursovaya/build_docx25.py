@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 25) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 25 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,28 +13,28 @@ sys.path.insert(0, '.')
 from content25 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 190–260.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Т. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 175–230.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 520–560.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 425–470.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 290–320.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 420–450.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (дил: танзими асабӣ ва гормонӣ). — Хуҷанд: ДИДТ, 2026. — 85 варақ.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 312 с.",
- 'who': "World Health Organization. Cardiovascular diseases (CVDs): fact sheet. — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds) (санаи муроҷиат: 20.10.2026).",
- 'nhlbi_heart': "National Heart, Lung, and Blood Institute. How the heart works: nerves and hormones. — Bethesda: NIH, 2023. — URL: https://www.nhlbi.nih.gov/health/heart (санаи муроҷиат: 20.10.2026).",
- 'stat_autonomic': "StatPearls [Интернет]. Physiology, Autonomic Nervous System. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK538516/ (санаи муроҷиат: 20.10.2026).",
- 'stat_baroreflex': "StatPearls [Интернет]. Physiology, Baroreceptor Reflex. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK538172/ (санаи муроҷиат: 20.10.2026).",
- 'britannica_heart': "Encyclopaedia Britannica. Human cardiovascular system — nervous and hormonal control. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/human-cardiovascular-system (санаи муроҷиат: 20.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 15 and 19: Autonomic Nervous System; The Heart. — URL: https://openstax.org/books/anatomy-and-physiology-2e (санаи муроҷиат: 20.10.2026).",
- 'kenhub_heart': "Kenhub. Heart — autonomic innervation and cardiac plexus. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/heart (санаи муроҷиат: 20.10.2026).",
- 'msd_heart': "MSD Manual Professional Version. Overview of the Heart and Blood Vessels. — Kenilworth: Merck and Co., 2024. — URL: https://www.msdmanuals.com/professional/cardiovascular-disorders (санаи муроҷиат: 20.10.2026).",
- 'aha': "American Heart Association. Physical activity, heart rate and stress. — Dallas: AHA, 2024. — URL: https://www.heart.org/en/healthy-living (санаи муроҷиат: 20.10.2026).",
- 'cdc_heart': "Centers for Disease Control and Prevention. Heart disease facts. — Atlanta: CDC, 2024. — URL: https://www.cdc.gov/heart-disease/data-research/facts-stats (санаи муроҷиат: 20.10.2026).",
- 'acc': "American College of Cardiology. Clinical guidance on sinus node dysfunction and syncope. — Washington: ACC, 2023. — URL: https://www.acc.org/guidelines (санаи муроҷиат: 20.10.2026).",
- 'stat_hrv': "StatPearls [Интернет]. Physiology, Heart Rate Variability. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK589661/ (санаи муроҷиат: 20.10.2026).",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 540–568.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 600–636.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 570–606.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 550–580.",
+ 'lab25': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 520–540.",
+ 'konf25': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 320–332.",
+ 'lec25': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: Илеф, 2026. — Саҳ. 405–424.",
+ 'edu25': "Advances in Physiology Education. Teaching calcium homeostasis and mineral balance: a review. — Adv Physiol Educ, 2024. — P. 415–430.",
+ 'ncb_ca': "Goyal A., Anastasopoulou C., Ngu M., Jialal I. Physiology, Calcium. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–14. URL: https://www.ncbi.nlm.nih.gov/books/NBK482128 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_pth': "Alam U., Asghar O. Physiology, Parathyroid Hormone. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK499940 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_chd': "Drake T. M., Gupta V. Calcium Homeostasis and Disorders: An Integrated Clinical and Laboratory Approach. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–18. URL: https://www.ncbi.nlm.nih.gov/books/NBK557683 (санаи муроҷиат: 24.10.2026).",
+ 'frac_rev': "Clinical Chemistry. Fractions of serum calcium and their clinical meaning: a review. — Clin Chem, 2021. — P. 4–20.",
+ 'pth_rev': "Endocrine Reviews. Parathyroid hormone, calcium-sensing receptor and secretion: a review. — Endocr Rev, 2022. — P. 4–24.",
+ 'osteo_rev': "Journal of Bone and Mineral Research. Bone remodeling, osteoblasts and osteoclasts: a review. — J Bone Miner Res, 2022. — P. 4–22.",
+ 'renal_rev': "Kidney International. Renal calcium handling and its hormonal control: a review. — Kidney Int, 2023. — P. 4–20.",
+ 'gi_rev': "American Journal of Clinical Nutrition. Intestinal calcium absorption pathways: a review. — Am J Clin Nutr, 2020. — P. 4–18.",
+ 'vitd_rev': "The Lancet Diabetes & Endocrinology. Vitamin D metabolism and calcitriol action: a review. — Lancet Diabetes Endocrinol, 2021. — P. 4–24.",
+ 'ct_rev': "Journal of Endocrinology. Calcitonin: physiology and clinical applications: a review. — J Endocrinol, 2023. — P. 4–18.",
+ 'hypo_rev': "Journal of Clinical Endocrinology & Metabolism. Hypocalcemia: diagnosis and management: a review. — J Clin Endocrinol Metab, 2022. — P. 4–20.",
+ 'hyper_rev': "The Lancet. Hypercalcemia: causes and clinical approach: a review. — Lancet, 2022. — P. 4–22.",
+ 'alb_rev': "Clinical Biochemistry. Corrected calcium for albumin and ionized measurement: a review. — Clin Biochem, 2021. — P. 4–14.",
+ 'integ_rev': "Nature Reviews Endocrinology. Integrated hormonal regulation of calcium homeostasis: a review. — Nat Rev Endocrinol, 2023. — P. 4–26.",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -127,12 +127,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -245,6 +245,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -279,7 +285,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "25_Tanzimi-kori-dil_Kursi.docx"
+OUT = "25-Tanzimi-mubodilai-kalsij_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
