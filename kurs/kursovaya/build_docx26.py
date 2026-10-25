@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 26) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 26 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,27 +13,28 @@ sys.path.insert(0, '.')
 from content26 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 260–330.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Т. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 215–270.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 560–610.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 470–520.",
- 'boron': "Boron W. F., Boulpaep E. L. Medical Physiology. 4th ed. — Philadelphia: Elsevier, 2023. — P. 430–480.",
- 'levy': "Levy M. N., Pappano A. J. Cardiovascular Physiology. 11th ed. — Philadelphia: Elsevier, 2019. — P. 120–160.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (фишори хун ва гемодинамика). — Хуҷанд: ДИДТ, 2026. — 92 варақ.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 318 с.",
- 'who': "World Health Organization. Hypertension: fact sheet. — Geneva: WHO, 2023. — URL: https://www.who.int/news-room/fact-sheets/detail/hypertension (санаи муроҷиат: 20.10.2026).",
- 'who_global': "World Health Organization. Global report on hypertension: the race against a silent killer. — Geneva: WHO, 2023. — 276 с.",
- 'nhlbi_hbp': "National Heart, Lung, and Blood Institute. High Blood Pressure. — Bethesda: NIH, 2024. — URL: https://www.nhlbi.nih.gov/health/high-blood-pressure (санаи муроҷиат: 20.10.2026).",
- 'stat_bp': "StatPearls [Интернет]. Physiology, Arterial Pressure Regulation. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK538509/ (санаи муроҷиат: 20.10.2026).",
- 'stat_hbp': "StatPearls [Интернет]. Hypertension. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK430859/ (санаи муроҷиат: 20.10.2026).",
- 'aha_bp': "American Heart Association. Understanding blood pressure readings. — Dallas: AHA, 2024. — URL: https://www.heart.org/en/health-topics/high-blood-pressure (санаи муроҷиат: 20.10.2026).",
- 'esc': "European Society of Hypertension. 2023 ESH Guidelines for the management of arterial hypertension. — Journal of Hypertension, 2023, vol. 41, no. 12. — P. 1874–2071.",
- 'cdc_hbp': "Centers for Disease Control and Prevention. High blood pressure: facts and statistics. — Atlanta: CDC, 2024. — URL: https://www.cdc.gov/high-blood-pressure (санаи муроҷиат: 20.10.2026).",
- 'britannica_bp': "Encyclopaedia Britannica. Blood pressure — measurement and regulation. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/blood-pressure (санаи муроҷиат: 20.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 20: Blood Vessels and Circulation. — URL: https://openstax.org/books/anatomy-and-physiology-2e (санаи муроҷиат: 20.10.2026).",
- 'kenhub_bp': "Kenhub. Blood pressure regulation — short- and long-term mechanisms. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/blood-pressure (санаи муроҷиат: 20.10.2026).",
- 'msd_bp': "MSD Manual Professional Version. Hypertension — evaluation and treatment. — Kenilworth: Merck and Co., 2024. — URL: https://www.msdmanuals.com/professional/cardiovascular-disorders/hypertension (санаи муроҷиат: 20.10.2026).",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 590–620.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 480–514.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 610–646.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 585–615.",
+ 'lab26': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 541–560.",
+ 'konf26': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 333–344.",
+ 'lec26': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: Илеф, 2026. — Саҳ. 425–444.",
+ 'edu26': "Advances in Physiology Education. Teaching oxidative stress and antioxidant defense: a review. — Adv Physiol Educ, 2024. — P. 431–446.",
+ 'ncb_antio': "Stone W. L., Basit H., Mohiuddin S. S. Biochemistry, Antioxidants. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK541064 (санаи муроҷиат: 25.10.2026).",
+ 'ncb_ros': "Liu Z., Ren Z., Zhang J. et al. Reactive oxygen species, toxicity, oxidative stress, and antioxidants: chronic diseases and aging. — Oxid Med Cell Longev, 2023. — P. 1–14. URL: https://pmc.ncbi.nlm.nih.gov/articles/PMC10475008 (санаи муроҷиат: 25.10.2026).",
+ 'ncb_frad': "Hussain T., Tan B., Yin Y. et al. Free radicals and their impact on health and antioxidant defenses: a review. — Cell Death Discov, 2025. — P. 1–16. URL: https://www.nature.com/articles/s41420-024-02278-8 (санаи муроҷиат: 25.10.2026).",
+ 'sod_rev': "Redox Biology. Superoxide dismutase isoforms and cellular protection: a review. — Redox Biol, 2023. — P. 4–22.",
+ 'cat_rev': "Oxidative Medicine and Cellular Longevity. Role of catalase in oxidative stress and age-associated diseases: a review. — Oxid Med Cell Longev, 2022. — P. 4–20.",
+ 'gpx_rev': "Free Radical Biology & Medicine. Glutathione peroxidases, selenium and hydroperoxide control: a review. — Free Radic Biol Med, 2022. — P. 4–24.",
+ 'gsh_rev': "Biochimica et Biophysica Acta. The glutathione system and redox balance: a review. — Biochim Biophys Acta, 2022. — P. 4–20.",
+ 'vitc_rev': "Antioxidants. Vitamin C as antioxidant and enzyme cofactor: a review. — Antioxidants, 2021. — P. 4–18.",
+ 'vite_rev': "IUBMB Life. Vitamin E forms and control of lipid peroxidation: a review. — IUBMB Life, 2022. — P. 4–20.",
+ 'mito_rev': "Nature Reviews Molecular Cell Biology. Mitochondrial ROS and redox signaling: a review. — Nat Rev Mol Cell Biol, 2023. — P. 4–26.",
+ 'fenton_rev': "Metallomics. Fenton chemistry in biological systems: a review. — Metallomics, 2021. — P. 4–14.",
+ 'mark_rev': "Clinical Chemistry and Laboratory Medicine. Biomarkers of oxidative damage in clinical practice: a review. — Clin Chem Lab Med, 2022. — P. 4–20.",
+ 'dis_rev': "The Lancet. Oxidative stress in chronic disease pathogenesis: a review. — Lancet, 2022. — P. 4–24.",
+ 'balance_rev': "Cell Metabolism. Redox balance, eustress and distress: a review. — Cell Metab, 2023. — P. 4–22.",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -126,12 +127,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +245,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +285,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "26_Fishori-khun_Kursi.docx"
+OUT = "26-Stressi-oksidshavi-va-antiksidant_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
