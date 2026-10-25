@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 24) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 18 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,27 +13,28 @@ sys.path.insert(0, '.')
 from content24 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 190–235.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Т. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 107–175.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 471–520.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 365–425.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 253–295.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 415–445.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (дил: автоматизм ва ЭКГ). — Хуҷанд: ДИДТ, 2026. — 85 варақ.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 312 с.",
- 'who': "World Health Organization. Cardiovascular diseases (CVDs): fact sheet. — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds) (санаи муроҷиат: 20.10.2026).",
- 'nhlbi_heart': "National Heart, Lung, and Blood Institute. Heart conduction system and arrhythmias. — Bethesda: NIH, 2023. — URL: https://www.nhlbi.nih.gov/health/heart (санаи муроҷиат: 20.10.2026).",
- 'stat_conduction': "StatPearls [Интернет]. Physiology, Cardiac Conduction. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK447097/ (санаи муроҷиат: 20.10.2026).",
- 'stat_ecg': "StatPearls [Интернет]. Electrocardiogram. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK549803/ (санаи муроҷиат: 20.10.2026).",
- 'britannica_heart': "Encyclopaedia Britannica. Human cardiovascular system — conduction system of the heart. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/human-cardiovascular-system (санаи муроҷиат: 20.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 19: The Cardiovascular System: The Heart. — URL: https://openstax.org/books/anatomy-and-physiology-2e (санаи муроҷиат: 20.10.2026).",
- 'kenhub_heart': "Kenhub. Heart — conduction system and innervation. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/heart (санаи муроҷиат: 20.10.2026).",
- 'msd_arrhythmia': "MSD Manual Professional Version. Overview of Arrhythmias. — Kenilworth: Merck and Co., 2024. — URL: https://www.msdmanuals.com/professional/cardiovascular-disorders/arrhythmias (санаи муроҷиат: 20.10.2026).",
- 'litfl': "Life in the Fast Lane. ECG Library: conduction blocks and rhythm analysis. — Brisbane: LITFL, 2024. — URL: https://litfl.com/ecg-library (санаи муроҷиат: 20.10.2026).",
- 'aha_arrhythmia': "American Heart Association. About arrhythmia. — Dallas: AHA, 2024. — URL: https://www.heart.org/en/health-topics/arrhythmia (санаи муроҷиат: 20.10.2026).",
- 'acc': "American College of Cardiology. Clinical guidelines on bradycardia and conduction disorders. — Washington: ACC, 2023. — URL: https://www.acc.org/guidelines (санаи муроҷиат: 20.10.2026).",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 536–572.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 604–638.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 588–612.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 566–592.",
+ 'lab24': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 512–533.",
+ 'konf24': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 313–326.",
+ 'lec24': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: Илеф, 2026. — Саҳ. 385–404.",
+ 'edu24': "Advances in Physiology Education. Teaching glucose homeostasis and insulin action: a review. — Adv Physiol Educ, 2025. — P. 427–442.",
+ 'ncb_diab': "Banday K. M., Stack B. A. Diabetes. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–16. URL: https://www.ncbi.nlm.nih.gov/books/NBK551501 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_ins': "Mohr K. A., Hoyt M. J. Biochemistry, Insulin Metabolic Effects. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK525983 (санаи муроҷиат: 24.10.2026).",
+ 'ncb_dka': "Lizzo J. M., Goyal A., Kaur J. Adult Diabetic Ketoacidosis. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–18. URL: https://www.ncbi.nlm.nih.gov/books/NBK560723 (санаи муроҷиат: 24.10.2026).",
+ 'insulin_rev': "Diabetes & Metabolism Journal. Insulin signaling, GLUT4 and glucose uptake: a review. — Diabetes Metab J, 2023. — P. 4–24.",
+ 'glucagon_rev': "Endocrine Reviews. Glucagon physiology and secretion: a review. — Endocr Rev, 2022. — P. 4–22.",
+ 'glycol_rev': "Biochemical Journal. Regulation of glycolysis in health and disease: a review. — Biochem J, 2022. — P. 4–26.",
+ 'glneo_rev': "Nature Reviews Molecular Cell Biology. Gluconeogenesis and its regulation: a review. — Nat Rev Mol Cell Biol, 2023. — P. 4–24.",
+ 'glyc_rev': "Trends in Biochemical Sciences. Glycogen metabolism and storage: a review. — Trends Biochem Sci, 2022. — P. 4–22.",
+ 't1d_rev': "The Lancet. Type 1 diabetes mellitus: pathogenesis and therapy: a review. — Lancet, 2023. — P. 4–24.",
+ 't2d_rev': "The Lancet Diabetes & Endocrinology. Insulin resistance and type 2 diabetes: a review. — Lancet Diabetes Endocrinol, 2022. — P. 4–26.",
+ 'hba1c_rev': "Diabetes Care. HbA1c in diagnosis and monitoring of diabetes: a review. — Diabetes Care, 2023. — P. 4–20.",
+ 'dka_rev': "Diabetes Metabolism Research and Reviews. Diabetic ketoacidosis: diagnosis and management: a review. — Diabetes Metab Res Rev, 2022. — P. 4–22.",
+ 'hypo_rev': "Journal of Clinical Endocrinology & Metabolism. Hypoglycemia: recognition and management: a review. — J Clin Endocrinol Metab, 2023. — P. 4–20.",
+ 'integ_rev': "Cell Metabolism. Integration of insulin and glucagon signaling: a review. — Cell Metab, 2023. — P. 4–26.",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -126,12 +127,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +245,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +285,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "24_Avtomatizmi-dil_Kursi.docx"
+OUT = "24-Insulin-va-glyukagon-glyukoza_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
