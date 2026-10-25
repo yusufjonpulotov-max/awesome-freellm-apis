@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 27) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 27 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,27 +13,28 @@ sys.path.insert(0, '.')
 from content27 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 230–300.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Т. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 185–215.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 610–650.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 520–560.",
- 'boron': "Boron W. F., Boulpaep E. L. Medical Physiology. 4th ed. — Philadelphia: Elsevier, 2023. — P. 480–530.",
- 'levy': "Levy M. N., Pappano A. J. Cardiovascular Physiology. 11th ed. — Philadelphia: Elsevier, 2019. — P. 160–190.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 295–325.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 450–480.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (микрогардиш ва мубодилаи моеъ). — Хуҷанд: ДИДТ, 2026. — 78 варақ.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 305 с.",
- 'who': "World Health Organization. Lymphatic filariasis: fact sheet. — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/lymphatic-filariasis (санаи муроҷиат: 20.10.2026).",
- 'nhlbi_lymph': "National Heart, Lung, and Blood Institute. Lymphedema. — Bethesda: NIH, 2024. — URL: https://www.nhlbi.nih.gov/health/lymphedema (санаи муроҷиат: 20.10.2026).",
- 'stat_micro': "StatPearls [Интернет]. Physiology, Microcirculation. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK541090/ (санаи муроҷиат: 20.10.2026).",
- 'stat_lymph': "StatPearls [Интернет]. Anatomy, Lymphatic System. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK513247/ (санаи муроҷиат: 20.10.2026).",
- 'britannica_lymph': "Encyclopaedia Britannica. Lymphatic system — structure and function. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/lymphatic-system (санаи муроҷиат: 20.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 20–21: Capillary Exchange; Lymphatic System. — URL: https://openstax.org/books/anatomy-and-physiology-2e (санаи муроҷиат: 20.10.2026).",
- 'kenhub_lymph': "Kenhub. Lymphatic system — vessels, nodes and drainage. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/lymphatic-system (санаи муроҷиат: 20.10.2026).",
- 'msd_lymph': "MSD Manual Professional Version. Lymphedema — etiology and management. — Kenilworth: Merck and Co., 2024. — URL: https://www.msdmanuals.com/professional/cardiovascular-disorders/lymphedema (санаи муроҷиат: 20.10.2026).",
- 'aha_micro': "American Heart Association. Microcirculation and tissue perfusion. — Dallas: AHA, 2024. — URL: https://www.heart.org/en/health-topics (санаи муроҷиат: 20.10.2026).",
+ 'leh': "Nelson D. L., Cox M. M. Lehninger Principles of Biochemistry. 8th ed. — New York: W. H. Freeman, 2021. — P. 148–176.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 620–654.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 480–512.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 601–630.",
+ 'lab27': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 561–580.",
+ 'konf27': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 345–356.",
+ 'lec27': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: Илеф, 2026. — Саҳ. 445–464.",
+ 'edu27': "Advances in Physiology Education. Teaching acute phase response and inflammatory markers: a review. — Adv Physiol Educ, 2024. — P. 447–462.",
+ 'ncb_crp': "Singh B., Goyal A., Patel B. C. C-Reactive Protein: Clinical Relevance and Interpretation. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–16. URL: https://www.ncbi.nlm.nih.gov/books/NBK441843 (санаи муроҷиат: 26.10.2026).",
+ 'ncb_apr': "Gulhar R., Ashraf M. A., Jialal I. Physiology, Acute Phase Reactants. StatPearls. — Treasure Island: StatPearls Publishing, 2023. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK519570 (санаи муроҷиат: 26.10.2026).",
+ 'ncb_esr': "Tishkowski K., Zubair M. Erythrocyte Sedimentation Rate. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–14. URL: https://www.ncbi.nlm.nih.gov/books/NBK557485 (санаи муроҷиат: 26.10.2026).",
+ 'ncb_pct': "Procalcitonin. StatPearls. — Treasure Island: StatPearls Publishing, 2022. — P. 1–12. URL: https://www.ncbi.nlm.nih.gov/books/NBK539794 (санаи муроҷиат: 26.10.2026).",
+ 'il6_rev': "Cytokine. Interleukin-6 and the hepatic acute phase response: a review. — Cytokine, 2021. — P. 4–18.",
+ 'hs_rev': "Clinical Chemistry. High-sensitivity CRP in cardiovascular risk assessment: a review. — Clin Chem, 2021. — P. 4–20.",
+ 'roule_rev': "Biorheology. Rouleaux formation and erythrocyte sedimentation: a review. — Biorheology, 2022. — P. 4–16.",
+ 'kine_rev': "Clinical Chemistry and Laboratory Medicine. Kinetics of C-reactive protein in inflammation: a review. — Clin Chem Lab Med, 2022. — P. 4–20.",
+ 'virbac_rev': "Journal of Infection. Distinguishing viral from bacterial infection with inflammatory markers: a review. — J Infect, 2022. — P. 4–24.",
+ 'sepsis_rev': "Critical Care. Procalcitonin in sepsis diagnosis and monitoring: a review. — Crit Care, 2023. — P. 4–22.",
+ 'npv_rev': "BMC Medicine. Procalcitonin-guided antibiotic stewardship: a review. — BMC Med, 2022. — P. 4–18.",
+ 'esrauto_rev': "International Journal of Laboratory Hematology. Automated erythrocyte sedimentation rate methods: a review. — Int J Lab Hematol, 2021. — P. 4–14.",
+ 'neon_rev': "Pediatric Research. Procalcitonin in neonatal infection: a review. — Pediatr Res, 2023. — P. 4–16.",
+ 'integ_rev': "Nature Reviews Immunology. Integration of acute phase response markers: a review. — Nat Rev Immunol, 2023. — P. 4–24.",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -126,12 +127,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +245,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +285,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "27_Mikrogardish_Kursi.docx"
+OUT = "27-Nishondihandhoi-iltihob-CRP-ESR-PCT_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
