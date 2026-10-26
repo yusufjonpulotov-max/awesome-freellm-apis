@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 29) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 29 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,27 +13,29 @@ sys.path.insert(0, '.')
 from content29 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 300–380.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Т. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 465–520.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 650–700.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 560–610.",
- 'boron': "Boron W. F., Boulpaep E. L. Medical Physiology. 4th ed. — Philadelphia: Elsevier, 2023. — P. 600–660.",
- 'west': "West J. B., Luks A. M. West’s Respiratory Physiology: The Essentials. 11th ed. — Philadelphia: Wolters Kluwer, 2020. — P. 1–60.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 325–350.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 480–510.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (механикаи нафас ва спирометрия). — Хуҷанд: ДИДТ, 2026. — 88 варақ.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 320 с.",
- 'who': "World Health Organization. Asthma and chronic obstructive pulmonary disease: fact sheet. — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/asthma (санаи муроҷиат: 20.10.2026).",
- 'nhlbi_lung': "National Heart, Lung, and Blood Institute. How the lungs work. — Bethesda: NIH, 2024. — URL: https://www.nhlbi.nih.gov/health/lungs (санаи муроҷиат: 20.10.2026).",
- 'stat_resp': "StatPearls [Интернет]. Physiology, Respiratory Mechanics. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK538316/ (санаи муроҷиат: 20.10.2026).",
- 'stat_spiro': "StatPearls [Интернет]. Spirometry. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK430859/ (санаи муроҷиат: 20.10.2026).",
- 'britannica_resp': "Encyclopaedia Britannica. Human respiratory system — mechanics of breathing. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/human-respiratory-system (санаи муроҷиат: 20.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 22: The Respiratory System. — URL: https://openstax.org/books/anatomy-and-physiology-2e (санаи муроҷиат: 20.10.2026).",
- 'kenhub_lung': "Kenhub. Lungs — anatomy, pleura and respiratory muscles. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-lung (санаи муроҷиат: 20.10.2026).",
- 'msd_lung': "MSD Manual Professional Version. Pulmonary function testing. — Kenilworth: Merck and Co., 2024. — URL: https://www.msdmanuals.com/professional/pulmonary-disorders (санаи муроҷиат: 20.10.2026).",
- 'ers': "American Thoracic Society / European Respiratory Society. Standardisation of spirometry: 2019 update. — European Respiratory Journal, 2019, vol. 54. — P. 1–40.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 664–698.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 890–920.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 618–648.",
+ 'tietz': "Rifai N. Tietz Fundamentals of Clinical Chemistry and Molecular Diagnostics. 8th ed. — Philadelphia: Elsevier, 2019. — P. 120–148.",
+ 'clsi_ep28': "CLSI. Defining, Establishing, and Verifying Reference Intervals in the Clinical Laboratory. EP28-A3c. — Wayne: CLSI, 2010. — P. 1–56.",
+ 'clsi_ep05': "CLSI. Evaluation of Precision of Quantitative Measurement Procedures. EP05-A3. — Wayne: CLSI, 2014. — P. 1–66.",
+ 'westgard16': "Westgard J. O., Klee G. G. Basic QC Practices. 4th ed. — Madison: Westgard QC, 2016. — P. 1–80.",
+ 'lab29': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 601–620.",
+ 'konf29': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 369–380.",
+ 'lec29': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: Илеф, 2026. — Саҳ. 485–504.",
+ 'edu29': "Advances in Physiology Education. Teaching laboratory quality control in biochemistry: a review. — Adv Physiol Educ, 2024. — P. 479–494.",
+ 'rev_iqc': "Clinical Chemistry and Laboratory Medicine. Internal quality control in clinical laboratories: a review. — Clin Chem Lab Med, 2021. — P. 4–22.",
+ 'rev_eqa': "Clinical Chemistry. External quality assessment and proficiency testing: a review. — Clin Chim Acta, 2022. — P. 4–20.",
+ 'rev_cal': "Clinical Biochemistry. Calibration traceability in clinical chemistry: a review. — Clin Biochem, 2020. — P. 4–18.",
+ 'rev_sigma': "Biochemia Medica. Sigma metrics in laboratory quality management: a review. — Biochem Med, 2021. — P. 4–18.",
+ 'rev_pre': "Scandinavian Journal of Clinical and Laboratory Investigation. Quality in the pre-analytical phase: a review. — Scand J Clin Lab Invest, 2022. — P. 4–18.",
+ 'rev_ref': "Annals of Laboratory Medicine. Reference intervals in clinical laboratories: a review. — Ann Lab Med, 2021. — P. 4–20.",
+ 'rev_risk': "Accreditation and Quality Assurance. Risk management and laboratory accreditation: a review. — Accredit Qual Assur, 2022. — P. 4–20.",
+ 'rev_tat': "Laboratory Medicine. Turnaround time as a quality indicator: a review. — Lab Med, 2021. — P. 4–16.",
+ 'rev_iso': "Biochemia Medica. Implementation of ISO 15189 in medical laboratories: a review. — Pract Lab Med, 2022. — P. 4–16.",
+ 'ncb_lab': "Lemery D. et al. Clinical Laboratory. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK535358 (санаи муроҷиат: 26.10.2026).",
+ 'ncb_qc': "Saidi A. et al. Creatine Kinase MB: Diagnostic Utility and Limitations. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK557591 (санаи муроҷиат: 26.10.2026).",
+ 'iso_std': "ISO 15189:2022. Medical laboratories — Requirements for quality and competence. 4th ed. — Geneva: ISO, 2022. — P. 1–70. URL: https://www.iso.org/standard/15189 (санаи муроҷиат: 26.10.2026).",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -126,12 +128,12 @@ pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 def setup_section(sec, landscape=False, numbered=False, allow_start=False):
     if landscape:
         sec.orientation = WD_ORIENT.LANDSCAPE
-        sec.page_width, sec.page_height = Cm(29.7), Cm(21.0)
+        sec.page_width, sec.page_height = Cm(30.7), Cm(21.0)
         sec.left_margin = sec.right_margin = Cm(2.0)
         sec.top_margin = sec.bottom_margin = Cm(2.0)
     else:
         sec.orientation = WD_ORIENT.PORTRAIT
-        sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
+        sec.page_width, sec.page_height = Cm(21.0), Cm(30.7)
         sec.left_margin, sec.right_margin = Cm(3.0), Cm(1.5)
         sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
     if numbered:
@@ -244,6 +246,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +286,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "29_Spirometriya_Kursi.docx"
+OUT = "29-Nazorati-sifat-laboratoriya_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
