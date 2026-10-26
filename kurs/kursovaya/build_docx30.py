@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сохтани .docx кори курсӣ (мавзӯи 30) бо талаботи банди 1/10."""
+"""Сохтани .docx кори курсӣ (мавзӯи 30 (биохимия)) бо талаботи банди 1/10."""
 import re, math, sys
 from docx import Document
 from docx.shared import Pt, Cm
@@ -13,27 +13,29 @@ sys.path.insert(0, '.')
 from content30 import C
 
 REFS = {
- 'phys': "Норкиев Ҷ. Н. ва ҳаммуаллифон. Физиологияи одам: дар 2 ҷилд. Ҷилди 2. — Душанбе: Маориф, 2001. — С. 300–380.",
- 'guyton': "Гайтон Э. Х., Холл Дж. Т. Трактат по медицинской физиологии / пер. с англ. 14-е изд. — М.: ГЭОТАР-Медиа, 2021. — С. 465–520.",
- 'ganong': "Ganong W. F. Review of Medical Physiology. 26th ed. — New York: McGraw-Hill Education, 2020. — P. 650–700.",
- 'sherwood': "Sherwood L. Human Physiology: From Cells to Systems. 10th ed. — Boston: Cengage, 2022. — P. 560–610.",
- 'boron': "Boron W. F., Boulpaep E. L. Medical Physiology. 4th ed. — Philadelphia: Elsevier, 2023. — P. 600–660.",
- 'west': "West J. B., Luks A. M. West’s Respiratory Physiology: The Essentials. 11th ed. — Philadelphia: Wolters Kluwer, 2020. — P. 1–60.",
- 'kierszenbaum': "Kierszenbaum A. L., Tres L. L. Histology and Cell Biology: An Introduction to Pathology. 4th ed. — Philadelphia: Elsevier, 2020. — P. 325–350.",
- 'ross2019': "Ross M. H., Pawlina W. Histology: A Textbook and Atlas. 8th ed. — Philadelphia: Wolters Kluwer, 2019. — P. 480–510.",
- 'afanasyev': "Афанасьев Ю. И., Юрина Н. А. Гистология, цитология и эмбриология. 6-е изд. — М.: ГЭОТАР-Медиа, 2012. — 640 с.",
- 'zayko': "Зайко Н. В., Быця В. М., Мовчан К. І. та ін. Фізіологія людини і тварин: довідник. — Киев: Здоров’я, 1985. — 680 с.",
- 'lab': "Материалҳои лабораторияи физиологияи инсон (механикаи нафас ва спирометрия). — Хуҷанд: ДИДТ, 2026. — 168 варақ.",
- 'konf': "Материалҳои конференсияи илмӣ-амалии ҷумҳуриявӣ «Физиология, равоншиносӣ ва педагогикаи олии касбӣ». — Душанбе, 2025. — 320 с.",
- 'who': "World Health Organization. Asthma and chronic obstructive pulmonary disease: fact sheet. — Geneva: WHO, 2024. — URL: https://www.who.int/news-room/fact-sheets/detail/asthma (санаи муроҷиат: 20.10.2026).",
- 'nhlbi_lung': "National Heart, Lung, and Blood Institute. How the lungs work. — Bethesda: NIH, 2024. — URL: https://www.nhlbi.nih.gov/health/lungs (санаи муроҷиат: 20.10.2026).",
- 'stat_resp': "StatPearls [Интернет]. Physiology, Respiratory Mechanics. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK538316/ (санаи муроҷиат: 20.10.2026).",
- 'stat_spiro': "StatPearls [Интернет]. Spirometry. — Treasure Island (FL): StatPearls Publishing, 2024. — URL: https://www.ncbi.nlm.nih.gov/books/NBK430859/ (санаи муроҷиат: 20.10.2026).",
- 'britannica_resp': "Encyclopaedia Britannica. Human respiratory system — mechanics of breathing. — Chicago: Britannica, 2024. — URL: https://www.britannica.com/science/human-respiratory-system (санаи муроҷиат: 20.10.2026).",
- 'openstax': "OpenStax. Anatomy and Physiology 2e. — Houston: Rice University, 2018–2023. — Ch. 22: The Respiratory System. — URL: https://openstax.org/books/anatomy-and-physiology-2e (санаи муроҷиат: 20.10.2026).",
- 'kenhub_lung': "Kenhub. Lungs — anatomy, pleura and respiratory muscles. — Vienna: Kenhub GmbH, 2025. — URL: https://www.kenhub.com/en/library/anatomy/the-lung (санаи муроҷиат: 20.10.2026).",
- 'msd_lung': "MSD Manual Professional Version. Pulmonary function testing. — Kenilworth: Merck and Co., 2024. — URL: https://www.msdmanuals.com/professional/pulmonary-disorders (санаи муроҷиат: 20.10.2026).",
- 'ers': "American Thoracic Society / European Respiratory Society. Standardisation of spirometry: 2019 update. — European Respiratory Journal, 2019, vol. 54. — P. 1–40.",
+ 'harper': "Rodwell V. W. et al. Harper's Illustrated Biochemistry. 32nd ed. — New York: McGraw-Hill, 2023. — P. 698–736.",
+ 'marks': "Lieberman M., Peet A. Marks' Basic Medical Biochemistry. 6th ed. — Philadelphia: Wolters Kluwer, 2022. — P. 920–960.",
+ 'komov': "Комов В. П., Шведова В. Н. Биохимия. — Москва: Юрайт, 2023. — С. 648–678.",
+ 'tietz': "Rifai N. Tietz Fundamentals of Clinical Chemistry and Molecular Diagnostics. 8th ed. — Philadelphia: Elsevier, 2019. — P. 620–660.",
+ 'lab30': "Маҷмуаи корҳои амалии биохимия ва физиология. — Хуҷанд: ДИДТ, 2026. — Саҳ. 621–640.",
+ 'konf30': "Маҷмӯаи мақолаҳои конфаренси илмии ҷавонон «Илми муосир ва саломатӣ». — Хуҷанд, 2025. — С. 381–392.",
+ 'lec30': "Маърузаҳои курси биохимияи тиббӣ. — Хуҷанд: Илеф, 2026. — Саҳ. 505–524.",
+ 'edu30': "Advances in Physiology Education. Teaching electrolytes and acid–base balance in biochemistry: a review. — Adv Physiol Educ, 2024. — P. 495–510.",
+ 'rev_na': "American Journal of Kidney Diseases. Disorders of sodium and water balance: a review. — Am J Kidney Dis, 2021. — P. 4–24.",
+ 'rev_k': "Journal of Clinical Medicine. Potassium disorders and cardiac arrhythmia: a review. — J Clin Med, 2022. — P. 4–20.",
+ 'rev_cl': "Clinical Chemistry. Chloride and the strong ion difference: a review. — Clin Chem, 2021. — P. 4–18.",
+ 'rev_ca': "Calcified Tissue International. Calcium and phosphate homeostasis: a review. — Calcif Tissue Int, 2022. — P. 4–20.",
+ 'rev_mg': "Nutrients. Magnesium in clinical practice: a review. — Nutrients, 2021. — P. 4–20.",
+ 'rev_abg': "Journal of Clinical Monitoring and Computing. Arterial blood gas analysis and the Henderson–Hasselbalch equation: a review. — J Clin Monit Comput, 2022. — P. 4–20.",
+ 'rev_acid': "Intensive Care Medicine. Metabolic acidosis in critical care: a review. — Intensive Care Med, 2021. — P. 4–24.",
+ 'rev_alk': "Journal of Nephrology. Pathophysiology and management of metabolic alkalosis: a review. — J Nephrol, 2021. — P. 4–20.",
+ 'rev_lft': "Clinical Chemistry. Liver enzymes in clinical practice: a review. — Clin Chem, 2022. — P. 4–20.",
+ 'rev_glu': "Diabetes Care. Diagnosis and classification of diabetes: thresholds. — Diabetes Care, 2023. — P. S13–S30.",
+ 'rev_kid': "Kidney International. Urea and creatinine as kidney function markers: a review. — Kidney Int, 2021. — P. 4–20.",
+ 'rev_panel': "Clinical Chemistry and Laboratory Medicine. The comprehensive metabolic panel: a review. — Clin Chem Lab Med, 2023. — P. 4–20.",
+ 'ncb_na': "Vaidya K. et al. Hyponatremia. StatPearls. — Treasure Island: StatPearls Publishing, 2026. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK470386 (санаи муроҷиат: 26.10.2026).",
+ 'ncb_k': "Simon L. V. et al. Hyperkalemia. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK470284 (санаи муроҷиат: 26.10.2026).",
+ 'ncb_acid': "Rastegar A. et al. Metabolic Acidosis. StatPearls. — Treasure Island: StatPearls Publishing, 2024. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK482146 (санаи муроҷиат: 26.10.2026).",
 }
 TOKEN = re.compile(r"\{R:(\w+)(?:\|([^}]+))?\}")
 
@@ -244,6 +246,12 @@ for b in C:
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0)); continue
     if kind == "h2" or kind == "h3":
         add_p(b[1], bold=True, align=WD_ALIGN_PARAGRAPH.LEFT); continue
+    if kind == "img":
+        ip = doc.add_paragraph()
+        ip.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        ip.paragraph_format.first_line_indent = Cm(0)
+        ip.add_run().add_picture(b[1], width=Cm(14.0))
+        continue
     if kind == "cap":
         add_p(b[1], size=12, bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, indent=Cm(0), spacing=1.0); continue
     if kind == "small":
@@ -278,7 +286,7 @@ for si, sec in enumerate(list(doc.sections)):
             if el.get(qn("w:start")) is not None:
                 sec._sectPr.remove(el)
 
-OUT = "30_Mubodilai-gazho_Kursi.docx"
+OUT = "30-Elektrolitho-va-muvizinati-kislotu-qullavi_Kursi.docx"
 doc.save(OUT)
 print("Сохта шуд:", OUT)
 print("Тартиби манбаъҳо:", ", ".join(f"{v}={k}" for k, v in sorted(num.items(), key=lambda kv: kv[1])))
