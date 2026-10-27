@@ -23,7 +23,7 @@ REFS = {
  'ada': "American Diabetes Association. Standards of Care in Diabetes—2023. — Diabetes Care, 2023. — Т. 46, Suppl. 1. — С. S1–S291.",
  'who_hba1c': "WHO. Use of Glycated Haemoglobin (HbA1c) in the Diagnosis of Diabetes Mellitus. — Geneva: World Health Organization, 2011. — P. 1–25. URL: https://www.who.int/publications/i/item/9789241506840 (санаи муроҷиат: 28.10.2026).",
  'who_sugar': "WHO. Guideline: Sugars intake for adults and children. — Geneva: World Health Organization, 2015. — P. 1–49.",
- 'efsa_carb': "EFSA Panel on Dietetic Products, Nutrition and Allergies. Dietary reference values for nutrients: carbohydrates and dietary fibre. — EFSA Journal, 2017. — P. 4629–4720.",
+ 'efsa_carb': "EFSA Panel on Dietetic Products, Nutrition and Allergies. Dietary reference values for carbohydrates and dietary fibre. — EFSA Journal, 2010; 8(3): 1462.",
  'iom_carb': "Institute of Medicine. Dietary Reference Intakes for Energy, Carbohydrate, Fiber, Fat, Fatty Acids. — Washington: National Academies Press, 2005. — P. 589–765.",
  'ncb_lact': "Baddam S., Tubben R. E. Lactic Acidosis. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK470202 (санаи муроҷиат: 28.10.2026).",
  'ncb_dka': "Lizzo J. M., Goyal A., Kaur J. Adult Diabetic Ketoacidosis. StatPearls. — Treasure Island: StatPearls Publishing, 2025. — P. 1–20. URL: https://www.ncbi.nlm.nih.gov/books/NBK560723 (санаи муроҷиат: 28.10.2026).",
