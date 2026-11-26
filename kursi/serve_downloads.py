@@ -13,7 +13,7 @@ FILES = [
     ("02_Frank-Starling_Kursi.docx", "Мавзӯи 2. Қонуни Франк–Старлинг"),
     ("03_Koronar_Kursi.docx", "Мавзӯи 3. Гардиши хуни коронарӣ"),
     ("04_Bozgashti-venagi_Kursi.docx", "Мавзӯи 6. Бозгашти венагӣ ва омилҳои он"),
-    ("05_Mubodilai-moe_Kursi.docx", "Мавзӯи 10. Мубодилаи моеъ байни капиллярҳо ва бофтаҳо"),
+    ("05_Mubodilai-moe_Kursi.docx", "Мавзӯи 10. Мубодилаи моеъ байни капиллярҳо ва бофтаҳо"),    ("06_Surfaktanti-shush_Kursi.docx", "Мавзӯи 13. Сурфактанти шуш ва механизми таъсири он"),
 ]
 
 PAGE = """<!doctype html>
