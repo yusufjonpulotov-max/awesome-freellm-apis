@@ -45,6 +45,10 @@ PAGE = """<!doctype html>
 <body><div class="card">
  <h1>Корҳои курсӣ — физиологияи инсон</h1>
  <p class="sub">Файлҳо дар формати Word (.docx) тайёр ҳастанд. Барои скачат тугмаро зер кунед.</p>
+ <p class="sub" style="font-size:13px;background:#eef2ff;border-radius:10px;padding:10px 12px">
+ Агар тугмаи «Скачат» дар дохили саҳифа кор накунад, тугмаро бо зеркунии рости муш
+ кушоед ва «Open link in new tab»-ро интихоб кунед. Ё файлро аз панели
+ «Files» дар тарафи чап кушоед — он ҷо тугмаи скачат ҳамеша кор мекунад.</p>
  {items}
  <div class="meta">Донишкадаи илмҳои дақиқ ва технологияи Тоҷикистон дар шаҳри Хуҷанд ·
  Факултети фанҳои дақиқ ва технологияи инноватсионӣ</div>
@@ -53,7 +57,7 @@ PAGE = """<!doctype html>
 
 ITEM = """ <div class="item">
   <div><div class="t">{title}</div><div class="s">{name} · {size} КБ</div></div>
-  <a class="btn" href="/download/{name}" download>Скачат</a>
+  <a class="btn" href="/download/{name}" target="_blank" rel="noopener">Скачат</a>
  </div>"""
 
 
@@ -84,10 +88,39 @@ class Handler(BaseHTTPRequestHandler):
             data = open(full, "rb").read()
             self.send_response(200)
             self.send_header("Content-Type", MIME)
-            self.send_header("Content-Disposition", 'attachment; filename="%s"' % name)
+            ascii_name = name.encode("ascii", "ignore").decode() or "kursi.docx"
+            self.send_header(
+                "Content-Disposition",
+                'attachment; filename="%s"; filename*=UTF-8\'\'%s'
+                % (ascii_name, urllib.parse.quote(name)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "no-store")
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             self.wfile.write(data)
+            return
+        self.send_error(404)
+
+    def do_HEAD(self):
+        """Браузерҳо ва проксиҳо пеш аз скачат сарлавҳаҳоро мепурсанд."""
+        path = urllib.parse.unquote(self.path.split("?")[0])
+        name = path.rsplit("/", 1)[-1]
+        allowed = {n for n, _ in FILES}
+        if path.startswith("/download/") and name in allowed:
+            full = os.path.join(BASE, name)
+            self.send_response(200)
+            self.send_header("Content-Type", MIME)
+            self.send_header("Content-Disposition", 'attachment; filename="%s"' % name)
+            self.send_header("Content-Length", str(os.path.getsize(full)))
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            return
+        if path in ("/", "/index.html"):
+            body = render()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
             return
         self.send_error(404)
 
